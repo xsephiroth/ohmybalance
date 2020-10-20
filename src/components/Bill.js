@@ -8,15 +8,14 @@ const Container = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 15px 10px;
   padding: 5px;
 `;
 
-const Block = styled.div`
+const Icon = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
+  align-items: center;
+  width: 30px;
 `;
 
 const Dot = styled.span`
@@ -35,6 +34,8 @@ const DotExpense = styled(Dot)`
 `;
 
 const Main = styled.div`
+  flex: 1;
+
   display: flex;
   justify-content: space-around;
 `;
@@ -59,6 +60,10 @@ const Remark = styled.span`
 `;
 
 const Amount = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   color: ${({ type }) => (type === "INCOME" ? colorGreen : colorRed)};
 
   ::before {
@@ -71,13 +76,15 @@ const Bill = ({ bill }) => {
 
   return (
     <Container>
-      {type === "INCOME" && <DotIncome />}
-      {type === "EXPENSE" && <DotExpense />}
+      <Icon>
+        {type === "INCOME" && <DotIncome />}
+        {type === "EXPENSE" && <DotExpense />}
+      </Icon>
       <Main>
-        <Block>
+        <div>
           <Category>{category}</Category>
           <Remark>{remark}</Remark>
-        </Block>
+        </div>
         <Amount type={type}>{amount}</Amount>
       </Main>
     </Container>
