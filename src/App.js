@@ -1,5 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { createGlobalStyle } from "styled-components";
+import { Card, Bill } from "./components";
 import tcb from "./tcb";
+
+const GlobalStyle = createGlobalStyle`
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+`;
 
 const useAuth = () => {
   const [loginState, setLoginState] = useState(null);
@@ -18,10 +33,54 @@ const useAuth = () => {
   return loginState;
 };
 
-function App() {
+const App = () => {
   const loginState = useAuth();
 
-  return <div className="App">Hello</div>;
-}
+  const bill1 = {
+    amount: 10,
+    type: "EXPENSE",
+    category: "日用",
+    remark: "备注了些东备注了些备注了些东备注了些东西西西西西",
+  };
+
+  const bill2 = {
+    amount: 185,
+    type: "INCOME",
+    category: "日用",
+    remark: "备注了些东备注了些东注了些东备注了些东西西西西西",
+  };
+
+  return (
+    <>
+      <GlobalStyle />
+      <div className="App">
+        <Card>
+          <Card.Body>
+            <>
+              <Bill bill={bill1} />
+              <Bill bill={bill2} />
+            </>
+          </Card.Body>
+        </Card>
+        <Card>
+          <Card.Body>
+            <>
+              <Bill bill={bill1} />
+              <Bill bill={bill2} />
+            </>
+          </Card.Body>
+        </Card>
+        <Card>
+          <Card.Body>
+            <>
+              <Bill bill={bill1} />
+              <Bill bill={bill2} />
+            </>
+          </Card.Body>
+        </Card>
+      </div>
+    </>
+  );
+};
 
 export default App;
