@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createGlobalStyle } from "styled-components";
-import { Card, Bill } from "./components";
+import { Card, Bill, FloatButton } from "./components";
 import tcb from "./tcb";
 
 const GlobalStyle = createGlobalStyle`
@@ -8,6 +8,10 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+
+  html {
+    min-height: 100vh;
   }
 
   body {
@@ -79,6 +83,7 @@ const App = () => {
           </Card.Body>
         </Card>
       </div>
+      <FloatButton>+</FloatButton>
     </>
   );
 };
