@@ -1,0 +1,9 @@
+{
+  "name": "ohmybalance-customlogin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.3.4",
+    "bcryptjs": "^2.4.3"
+  }
+}

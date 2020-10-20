@@ -1,0 +1,24 @@
+{
+  "envId": "dev-6gbr1lxy06dc39d1",
+  "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
+  "functionRoot": "./functions",
+  "functions": [
+    {
+      "name": "ohmybalance-auth",
+      "timeout": 5,
+      "envVariables": {},
+      "runtime": "Nodejs10.15",
+      "memorySize": 128,
+      "handler": "index.main"
+    }
+  ],
+  "framework": {
+    "name": "ohmybalance",
+    "plugins": {
+      "function": {
+        "use": "@cloudbase/framework-plugin-function",
+        "inputs": {}
+      }
+    }
+  }
+}
