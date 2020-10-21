@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, NavigationBar } from "../components";
+import { Layout, NavigationBar, AmountInput } from "../components";
 
 const Edit = () => {
   return (
@@ -8,7 +8,7 @@ const Edit = () => {
         start={<NavigationBar.Back />}
         center={<NavigationBar.Center>Hello</NavigationBar.Center>}
       />
-      <h1>CreateBill</h1>
+      <AmountInput />
     </Layout>
   );
 };
