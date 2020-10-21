@@ -4,16 +4,17 @@ import styled from "styled-components";
 const Button = styled.button`
   outline: none;
   border: none;
-  color: white;
   font-size: 1.8rem;
 
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #5ed1e7;
   cursor: pointer;
   transition: 0.05s all;
   -webkit-tap-highlight-color: transparent;
+
+  color: ${({ color }) => color};
+  background-color: ${({ bgColor }) => bgColor};
 
   position: fixed;
   top: ${({ top }) => top};
@@ -23,7 +24,7 @@ const Button = styled.button`
   transform: translate(-50%, -50%);
 
   &:active {
-    filter: brightness(0.8);
+    filter: opacity(0.8);
   }
 `;
 
@@ -33,10 +34,20 @@ const FloatButton = ({
   right,
   bottom = 0,
   left = "50%",
+  color = "white",
+  bgColor = "rgba(94, 209, 231, 1)",
   ...restProps
 }) => {
   return (
-    <Button top={top} right={right} bottom={bottom} left={left} {...restProps}>
+    <Button
+      top={top}
+      right={right}
+      bottom={bottom}
+      left={left}
+      color={color}
+      bgColor={bgColor}
+      {...restProps}
+    >
       {children}
     </Button>
   );
