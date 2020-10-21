@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import { Card, Bill, FloatButton } from "./components";
-import tcb from "./tcb";
+import CreateBill from "./pages/CreateBill";
+import Home from "./pages/Home";
 
 const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
@@ -20,70 +21,16 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const useAuth = () => {
-  const [loginState, setLoginState] = useState(null);
-
-  useEffect(() => {
-    if (!tcb.auth().hasLoginState()) {
-      tcb
-        .auth()
-        .anonymousAuthProvider()
-        .signIn()
-        .then((res) => setLoginState(res))
-        .catch(console.error);
-    }
-  }, []);
-
-  return loginState;
-};
-
 const App = () => {
-  const loginState = useAuth();
-
-  const bill1 = {
-    amount: 10,
-    type: "EXPENSE",
-    category: "日用",
-    remark: "备注了些东备注了些备注了些东备注了些东西西西西西",
-  };
-
-  const bill2 = {
-    amount: 185,
-    type: "INCOME",
-    category: "日用",
-    remark: "备注了些东备注了些东注了些东备注了些东西西西西西",
-  };
-
   return (
     <>
       <GlobalStyle />
-      <div className="App">
-        <Card>
-          <Card.Body>
-            <>
-              <Bill bill={bill1} />
-              <Bill bill={bill2} />
-            </>
-          </Card.Body>
-        </Card>
-        <Card>
-          <Card.Body>
-            <>
-              <Bill bill={bill1} />
-              <Bill bill={bill2} />
-            </>
-          </Card.Body>
-        </Card>
-        <Card>
-          <Card.Body>
-            <>
-              <Bill bill={bill1} />
-              <Bill bill={bill2} />
-            </>
-          </Card.Body>
-        </Card>
-      </div>
-      <FloatButton>+</FloatButton>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/add" component={CreateBill} />
+        </Switch>
+      </Router>
     </>
   );
 };
