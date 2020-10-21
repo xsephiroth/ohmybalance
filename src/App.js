@@ -1,8 +1,7 @@
 import React from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import CreateBill from "./pages/CreateBill";
-import Home from "./pages/Home";
+import { Home, Edit } from "./pages";
 
 const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
@@ -28,7 +27,7 @@ const App = () => {
       <Router>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/add" component={CreateBill} />
+          <Route path="/add" component={Edit} />
         </Switch>
       </Router>
     </>
