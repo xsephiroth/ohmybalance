@@ -7,6 +7,7 @@ const Container = styled.div`
   width: 94%;
   margin: 10px auto;
 
+  background-color: ${({ theme }) => theme.backgroundColor.secondary};
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 
   & + & {

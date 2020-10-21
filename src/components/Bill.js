@@ -1,9 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-const colorGreen = `#59df59`;
-const colorRed = `#ff7373`;
-
 const Container = styled.div`
   display: flex;
   justify-content: space-around;
@@ -27,10 +24,10 @@ const Dot = styled.span`
 `;
 
 const DotIncome = styled(Dot)`
-  background-color: ${colorGreen};
+  background-color: ${({ theme }) => theme.color.income};
 `;
 const DotExpense = styled(Dot)`
-  background-color: ${colorRed};
+  background-color: ${({ theme }) => theme.color.expense};
 `;
 
 const Main = styled.div`
@@ -64,7 +61,8 @@ const Amount = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: ${({ type }) => (type === "INCOME" ? colorGreen : colorRed)};
+  color: ${({ theme, type }) =>
+    type === "INCOME" ? theme.color.income : theme.color.expense};
 
   ::before {
     content: "${({ type }) => (type === "INCOME" ? "+" : "-")}";

@@ -1,15 +1,15 @@
 import React from "react";
-import { NavigationBar } from "../components";
+import { Layout, NavigationBar } from "../components";
 
 const Edit = () => {
   return (
-    <>
+    <Layout>
       <NavigationBar
         start={<NavigationBar.Back />}
         center={<NavigationBar.Center>Hello</NavigationBar.Center>}
       />
       <h1>CreateBill</h1>
-    </>
+    </Layout>
   );
 };
 

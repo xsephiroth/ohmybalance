@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Card, Bill, FloatButton } from "../components";
+import { Layout, Card, Bill, FloatButton } from "../components";
 import tcb from "../tcb";
 
 const useAuth = () => {
@@ -37,7 +37,7 @@ const Home = () => {
     remark: "备注了些东备注了些东注了些东备注了些东西西西西西",
   };
   return (
-    <>
+    <Layout>
       <Card>
         <Card.Body>
           <>
@@ -63,7 +63,7 @@ const Home = () => {
         </Card.Body>
       </Card>
       <FloatButton onClick={() => history.push("/add")}>+</FloatButton>
-    </>
+    </Layout>
   );
 };
 
