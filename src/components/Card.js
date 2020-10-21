@@ -5,7 +5,7 @@ const Container = styled.div`
   border: 1px solid #eee;
   border-radius: 5px;
   width: 94%;
-  margin: 10px auto;
+  margin: 0 auto 10px;
 
   background-color: ${({ theme }) => theme.backgroundColor.secondary};
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
