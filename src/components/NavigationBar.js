@@ -15,8 +15,8 @@ const minWidthMixin = css`
 const Container = styled.div`
   height: 50px;
   padding: 10px;
-  color: white;
-  background-color: black;
+  color: ${({ theme }) => theme.color.primary};
+  background-color: ${({ theme }) => theme.backgroundColor.primary};
 
   display: flex;
   justify-content: space-between;

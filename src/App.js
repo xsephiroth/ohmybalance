@@ -5,13 +5,15 @@ import { Home, Edit } from "./pages";
 
 const theme = {
   backgroundColor: {
-    primary: "black",
-    secondary: "#eee",
+    primary: "#1e272e",
+    secondary: "#39444c",
   },
 
   color: {
-    income: "#59df59",
-    expense: "#ff7373",
+    primary: "#fff",
+    secondary: "#aab1b7",
+    income: "#0be881",
+    expense: "#ff5e57",
   },
 };
 

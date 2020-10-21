@@ -42,12 +42,13 @@ const Category = styled.p`
   padding: 0;
   font-weight: 400;
   margin-bottom: 5px;
+  color: ${({ theme }) => theme.color.primary};
 `;
 
 const Remark = styled.span`
   display: block;
   font-size: 0.8rem;
-  color: #b2b2b2;
+  color: ${({ theme }) => theme.color.secondary};
 
   max-width: 60vw;
 
