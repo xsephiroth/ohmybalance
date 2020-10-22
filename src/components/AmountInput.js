@@ -24,6 +24,7 @@ const Key = styled.button`
     bgc ? bgc : "transparent"};
   &:active {
     filter: opacity(0.8);
+    background-color: ${({ theme }) => theme.backgroundColor.primary};
   }
 `;
 
