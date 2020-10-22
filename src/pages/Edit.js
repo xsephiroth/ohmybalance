@@ -1,5 +1,8 @@
 import React from "react";
-import { Layout, NavigationBar, AmountInput } from "../components";
+import styled from "styled-components";
+import { Layout, NavigationBar, CategoryBtn, AmountInput } from "../components";
+
+const Categories = styled.div``;
 
 const Edit = () => {
   return (
@@ -8,6 +11,10 @@ const Edit = () => {
         start={<NavigationBar.Back />}
         center={<NavigationBar.Center>Hello</NavigationBar.Center>}
       />
+      <Categories>
+        <CategoryBtn>美妆</CategoryBtn>
+        <CategoryBtn>日用品</CategoryBtn>
+      </Categories>
       <AmountInput />
     </Layout>
   );
