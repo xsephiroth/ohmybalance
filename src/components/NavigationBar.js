@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useHistory } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -64,7 +64,7 @@ const Back = ({ children, onClick, ...restProps }) => {
   );
 };
 
-const NavigationBar = ({ start, center, end }) => {
+const NavigationBar = memo(({ start, center, end }) => {
   return (
     <Container>
       <Start>{start}</Start>
@@ -72,7 +72,7 @@ const NavigationBar = ({ start, center, end }) => {
       <End>{end}</End>
     </Container>
   );
-};
+});
 
 NavigationBar.Start = Start;
 NavigationBar.Center = Center;

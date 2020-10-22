@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo } from "react";
 import styled, { useTheme } from "styled-components";
 
 const Container = styled.div`
@@ -40,7 +40,7 @@ const useSaveBtnColor = (type) => {
   }
 };
 
-const AmountInput = () => {
+const AmountInput = memo(() => {
   const saveBtnColor = useSaveBtnColor("EXPENSE");
 
   return (
@@ -65,6 +65,6 @@ const AmountInput = () => {
       </InputWrapper>
     </Container>
   );
-};
+});
 
 export default AmountInput;
