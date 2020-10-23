@@ -53,6 +53,7 @@ const useLongPress = (duration = 500) => {
       clear();
       id = setTimeout(() => {
         setIsLongPress(true);
+        navigator.vibrate(50);
       }, duration);
     };
 
