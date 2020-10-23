@@ -1,27 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { Layout, Card, Bill, FloatButton } from "../components";
-import tcb from "../tcb";
 
-const useAuth = () => {
-  const [loginState, setLoginState] = useState(null);
-
-  useEffect(() => {
-    if (!tcb.auth().hasLoginState()) {
-      tcb
-        .auth()
-        .anonymousAuthProvider()
-        .signIn()
-        .then((res) => setLoginState(res))
-        .catch(console.error);
-    }
-  }, []);
-
-  return loginState;
-};
 const Home = () => {
   const history = useHistory();
-  const loginState = useAuth();
 
   const bill1 = {
     amount: 10,

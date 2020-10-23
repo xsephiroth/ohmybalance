@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { Home, Edit } from "./pages";
+import tcb from "./tcb";
 
 const theme = {
   backgroundColor: {
@@ -30,7 +31,26 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const useAuth = () => {
+  const [loginState, setLoginState] = useState(null);
+
+  useEffect(() => {
+    if (!tcb.auth().hasLoginState()) {
+      tcb
+        .auth()
+        .anonymousAuthProvider()
+        .signIn()
+        .then((res) => setLoginState(res))
+        .catch(console.error);
+    }
+  }, []);
+
+  return loginState;
+};
+
 const App = () => {
+  useAuth();
+
   return (
     <>
       <GlobalStyle />
