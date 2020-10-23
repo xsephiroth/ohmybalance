@@ -12,7 +12,13 @@ const Container = styled.textarea`
 `;
 
 const Remark = () => {
-  return <Container rows={2}>abc</Container>;
+  return (
+    <Container
+      rows={2}
+      value={"abc"}
+      onChange={(e) => console.log(e.target.value)}
+    />
+  );
 };
 
 export default Remark;
