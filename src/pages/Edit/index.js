@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Layout, NavigationBar } from "../../components";
 import Categories from "./Categories";
 import Remark from "./Remark";
+import DatePicker from "./DatePicker";
 import Amount from "./Amount";
 import AmountKeyboard from "./AmountKeyboard";
 
@@ -33,6 +34,7 @@ const Edit = () => {
         <Block>
           <Info>
             <Remark />
+            <DatePicker />
             <Amount />
           </Info>
           <AmountKeyboard />
