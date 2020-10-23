@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, memo } from "react";
 import styled, { css } from "styled-components";
 
 const Button = styled.button`
-  border: none;
   outline: none;
   -webkit-tap-highlight-color: transparent;
   padding: 4px 8px;
@@ -10,7 +9,9 @@ const Button = styled.button`
   margin: 5px;
   background-color: ${({ theme }) => theme.backgroundColor.secondary};
   color: ${({ theme }) => theme.color.primary};
+  user-select: none;
 
+  border: 1px solid transparent;
   ${({ active, theme }) =>
     active &&
     css`
@@ -28,8 +29,9 @@ const Button = styled.button`
         left: 0;
         width: 100%;
         height: 100%;
+        padding: 6px 8px;
         border-radius: 10px;
-        background-color: red;
+        background-color: ${({ theme }) => theme.color.expense};
       }
     `}
 `;
