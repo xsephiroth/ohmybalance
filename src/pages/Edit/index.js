@@ -1,6 +1,7 @@
 import React from "react";
 import { Layout, NavigationBar } from "../../components";
 import Categories from "./Categories";
+import Remark from "./Remark";
 import AmountKeyboard from "./AmountKeyboard";
 
 const Edit = () => {
@@ -11,6 +12,7 @@ const Edit = () => {
         center={<NavigationBar.Center>Hello</NavigationBar.Center>}
       />
       <Categories />
+      <Remark />
       <AmountKeyboard />
     </Layout>
   );
