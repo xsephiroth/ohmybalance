@@ -1,9 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
 const Container = styled.div`
   width: 100vw;
   background-color: ${({ theme }) => theme.backgroundColor.secondary};
+  display: ${({ hide }) => (hide ? "none" : "auto")};
 `;
 
 const InputWrapper = styled.div`
@@ -38,11 +39,29 @@ const useSaveBtnColor = (type) => {
   }
 };
 
+const useKeyboardHide = () => {
+  const [hide, setHide] = useState(false);
+  const defaultHeight = window.innerHeight;
+
+  useEffect(() => {
+    const check = () => {
+      setHide(window.innerHeight < defaultHeight);
+    };
+    window.addEventListener("resize", check);
+
+    return () => window.removeEventListener("resize", check);
+  }, [defaultHeight]);
+
+  return hide;
+};
+
 const AmountKeyboard = memo(() => {
+  // 手机设备输入法弹出时不显示金额输入部分
+  const hide = useKeyboardHide();
   const saveBtnColor = useSaveBtnColor("EXPENSE");
 
   return (
-    <Container>
+    <Container hide={hide}>
       <InputWrapper>
         <Key>1</Key>
         <Key>2</Key>
