@@ -78,12 +78,11 @@ const CategoryBtn = ({
   willDelete = false,
   ...restProps
 }) => {
-  console.log(willDelete);
   const [ref, isLongPress, reset] = useLongPress();
   useEffect(() => {
     isLongPress && setLongPress(isLongPress);
     reset();
-  }, [isLongPress, reset]);
+  }, [isLongPress, reset, setLongPress]);
   return (
     <Button ref={ref} showDel={willDelete} {...restProps}>
       {children}
