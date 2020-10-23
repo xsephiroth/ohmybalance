@@ -53,7 +53,6 @@ const useLongClick = (duration = 500, onClick, onLongClick) => {
   const longRef = useRef(false);
 
   useEffect(() => {
-    console.log("effect");
     if (!ref.current) return;
     const btn = ref.current;
 
