@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-size: 14px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: -apple-system,Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,Segoe UI,Roboto,sans-serif;
   }
 `;
 
