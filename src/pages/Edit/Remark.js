@@ -8,6 +8,7 @@ const Container = styled.textarea`
   background-color: ${({ theme }) => theme.backgroundColor.secondary};
   color: ${({ theme }) => theme.color.primary};
   padding: 5px;
+  resize: none;
 `;
 
 const Remark = () => {
