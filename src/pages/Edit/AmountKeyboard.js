@@ -40,7 +40,7 @@ const useSaveBtnColor = (type) => {
   }
 };
 
-const AmountInput = memo(() => {
+const AmountKeyboard = memo(() => {
   const saveBtnColor = useSaveBtnColor("EXPENSE");
 
   return (
@@ -67,4 +67,4 @@ const AmountInput = memo(() => {
   );
 });
 
-export default AmountInput;
+export default AmountKeyboard;
