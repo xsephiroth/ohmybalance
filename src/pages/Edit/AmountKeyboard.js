@@ -3,8 +3,6 @@ import styled, { useTheme } from "styled-components";
 
 const Container = styled.div`
   width: 100vw;
-  position: fixed;
-  bottom: 0;
   background-color: ${({ theme }) => theme.backgroundColor.secondary};
 `;
 

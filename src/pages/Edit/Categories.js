@@ -210,7 +210,7 @@ const AddCagetory = () => {
 };
 
 const Container = styled.div`
-  height: 50vh;
+  flex: 1;
 `;
 
 const Categories = () => {
