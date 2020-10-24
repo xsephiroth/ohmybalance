@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { useQuery, useMutation, useQueryCache } from "react-query";
-import { fetchCategories, updateCategories } from "./api";
+import { fetchCategories, updateCategories } from "../../api";
 
 const Container = styled.div`
   flex: 1;
