@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { useQuery, useMutation, useQueryCache } from "react-query";
-import { fetchCategories, updateCategories } from "../../api";
+import { useLongClick, useCategories, useMutateCategories } from "./hooks";
 
 const Container = styled.div`
   flex: 1;
@@ -60,73 +59,6 @@ const AddCategoryInput = styled.input`
   background-color: white;
   padding: 0.5em;
 `;
-
-const useLongClick = (duration = 500, onClick, onLongClick) => {
-  const ref = useRef();
-  const longRef = useRef(false);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const btn = ref.current;
-
-    let id;
-    const end = () => {
-      clearTimeout(id);
-
-      if (!longRef.current) {
-        // eslint-disable-next-line no-unused-expressions
-        onClick?.();
-      }
-    };
-
-    const start = (e) => {
-      // 避免touchstart与mousedown冲突
-      e.preventDefault();
-
-      // reset
-      clearTimeout(id);
-      longRef.current = false;
-
-      id = setTimeout(() => {
-        longRef.current = true;
-        // eslint-disable-next-line no-unused-expressions
-        onLongClick?.();
-        navigator.vibrate(50);
-      }, duration);
-    };
-
-    btn.addEventListener("touchstart", start);
-    btn.addEventListener("touchend", end);
-    btn.addEventListener("touchcancel", end);
-    btn.addEventListener("mousedown", start);
-    btn.addEventListener("mouseup", end);
-
-    return () => {
-      clearTimeout(id);
-      btn.removeEventListener("touchstart", start);
-      btn.removeEventListener("touchend", end);
-      btn.removeEventListener("touchcancel", end);
-      btn.removeEventListener("mousedown", start);
-      btn.removeEventListener("mouseup", end);
-    };
-  }, [duration, onClick, onLongClick]);
-
-  return ref;
-};
-
-const useCategories = () => {
-  return useQuery("categories", fetchCategories);
-};
-
-const useMutateCategories = (config = {}) => {
-  const queryCache = useQueryCache();
-
-  const cfg = {
-    onSuccess: () => queryCache.invalidateQueries("categories"),
-    ...config,
-  };
-  return useMutation(updateCategories, cfg);
-};
 
 const CategoryBtn = ({
   category,
