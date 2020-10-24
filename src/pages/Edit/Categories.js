@@ -1,17 +1,11 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
-import {
-  atom,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
-import {
-  categoriesState,
-  categoryDeleteSelectState,
-  isCategoryChoiceSelector,
-  isWillDeleteCategorySelector,
-} from "../../store/category";
+import { useQuery, useMutation, useQueryCache } from "react-query";
+import { fetchCategories, updateCategories } from "./api";
+
+const Container = styled.div`
+  flex: 1;
+`;
 
 const Button = styled.button`
   outline: none;
@@ -46,6 +40,25 @@ const Button = styled.button`
         background-color: ${({ theme }) => theme.color.expense};
       }
     `}
+`;
+
+const AddCategoryButton = styled(Button)`
+  width: 50px;
+  padding: 0.5em;
+`;
+
+const AddCategoryForm = styled.form`
+  display: inline-block;
+  width: 60px;
+`;
+
+const AddCategoryInput = styled.input`
+  width: 100%;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  background-color: white;
+  padding: 0.5em;
 `;
 
 const useLongClick = (duration = 500, onClick, onLongClick) => {
@@ -101,23 +114,30 @@ const useLongClick = (duration = 500, onClick, onLongClick) => {
   return ref;
 };
 
-const CategoryBtn = ({ category, ...restProps }) => {
-  // 选中
-  const [active, setCategorySelect] = useRecoilState(
-    isCategoryChoiceSelector(category)
-  );
-  const handleClick = useCallback(() => {
-    setCategorySelect(category);
-  }, [category, setCategorySelect]);
+const useCategories = () => {
+  return useQuery("categories", fetchCategories);
+};
 
-  // 长按
-  const [showDelete, setCategoryDeleteSelect] = useRecoilState(
-    isWillDeleteCategorySelector(category)
-  );
-  const handleLongClick = useCallback(() => {
-    setCategoryDeleteSelect(category);
-  }, [category, setCategoryDeleteSelect]);
+const useMutateCategories = (config = {}) => {
+  const queryCache = useQueryCache();
 
+  const cfg = {
+    onSuccess: () => queryCache.invalidateQueries("categories"),
+    ...config,
+  };
+  return useMutation(updateCategories, cfg);
+};
+
+const CategoryBtn = ({
+  category,
+  active,
+  showDel,
+  onClick,
+  onLongClick,
+  ...restProps
+}) => {
+  const handleClick = () => onClick?.(category);
+  const handleLongClick = () => onLongClick?.(category);
   const ref = useLongClick(500, handleClick, handleLongClick);
 
   return (
@@ -125,7 +145,7 @@ const CategoryBtn = ({ category, ...restProps }) => {
       ref={ref}
       onClick={(e) => e.stopPropagation()}
       active={active}
-      showDel={showDelete}
+      showDel={showDel}
       {...restProps}
     >
       {category}
@@ -133,39 +153,18 @@ const CategoryBtn = ({ category, ...restProps }) => {
   );
 };
 
-const AddCategoryButton = styled(Button)`
-  width: 50px;
-  padding: 0.5em;
-`;
-
-const AddCategoryForm = styled.form`
-  display: inline-block;
-  width: 60px;
-`;
-
-const AddCategoryInput = styled.input`
-  width: 100%;
-  outline: none;
-  border: none;
-  border-radius: 10px;
-  background-color: white;
-  padding: 0.5em;
-`;
-
-const addCategoryShowInputState = atom({
-  key: "addCategoryShowInput",
-  default: false,
-});
-
-const AddCagetory = () => {
-  const [showInput, setShowInput] = useRecoilState(addCategoryShowInputState);
-  const [categories, setCategories] = useRecoilState(categoriesState);
-  const [newCategory, setNewCategory] = useState("");
-
+const AddCagetory = ({ showInput, setShowInput }) => {
   // 隐藏添加输入框时清空旧数据
   useEffect(() => {
     !showInput && setNewCategory("");
   }, [showInput]);
+
+  const [newCategory, setNewCategory] = useState("");
+
+  const { data: categories } = useCategories();
+  const [mutateCategories] = useMutateCategories({
+    onSettled: () => setShowInput(false),
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -175,11 +174,7 @@ const AddCagetory = () => {
       return;
     }
 
-    // TODO fetch request
-    setTimeout(() => {
-      setCategories((categories) => [...categories, newCategory]);
-      setShowInput(false);
-    }, 500);
+    mutateCategories([...categories, newCategory]);
   };
 
   return (
@@ -208,31 +203,53 @@ const AddCagetory = () => {
   );
 };
 
-const Container = styled.div`
-  flex: 1;
-`;
-
 const Categories = () => {
-  const categories = useRecoilValue(categoriesState);
+  const { data: categories, isLoading } = useCategories();
+  const [categorySelect, setCategorySelect] = useState("");
+  const [categoryDeleteSelect, setCategoryDeleteSelect] = useState("");
+  const [showAddInput, setShowAddInput] = useState(false);
 
-  // 点击空白处取消添加category
-  const setAddCategoryShowInput = useSetRecoilState(addCategoryShowInputState);
-
-  // 点击空白处取消删除的选中
-  // 不影响正常选中的类目
-  const setCategoryDeleteSelect = useSetRecoilState(categoryDeleteSelectState);
-
-  const handleClick = () => {
-    setAddCategoryShowInput(false);
+  const handleReset = () => {
+    setCategorySelect("");
     setCategoryDeleteSelect("");
+    setShowAddInput(false);
   };
 
+  const [mutateCategories] = useMutateCategories();
+
+  const handleCategoryClick = (category) => {
+    if (categoryDeleteSelect !== category) {
+      setCategorySelect((c) => (c === category ? "" : category));
+      setCategoryDeleteSelect("");
+      setShowAddInput(false);
+    } else {
+      mutateCategories(categories.filter((c) => c !== category));
+    }
+  };
+
+  const handleCategoryLongClick = (category) => {
+    setCategoryDeleteSelect(category);
+    setCategorySelect("");
+    setShowAddInput(false);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Container onClick={handleClick}>
+    <Container onClick={handleReset}>
       {categories.map((category) => (
-        <CategoryBtn key={category} category={category} />
+        <CategoryBtn
+          key={category}
+          category={category}
+          active={categorySelect === category}
+          showDel={categoryDeleteSelect === category}
+          onClick={handleCategoryClick}
+          onLongClick={handleCategoryLongClick}
+        />
       ))}
-      <AddCagetory />
+      <AddCagetory showInput={showAddInput} setShowInput={setShowAddInput} />
     </Container>
   );
 };

@@ -49,18 +49,22 @@ const useAuth = () => {
 };
 
 const App = () => {
-  useAuth();
+  const loginState = useAuth();
 
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Router>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/add" component={Edit} />
-          </Switch>
-        </Router>
+        {!loginState ? (
+          <p>Loading...</p>
+        ) : (
+          <Router>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/add" component={Edit} />
+            </Switch>
+          </Router>
+        )}
       </ThemeProvider>
     </>
   );
