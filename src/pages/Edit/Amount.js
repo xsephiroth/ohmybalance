@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useBill } from "./BillContext";
 
 const Container = styled.div`
   flex: 1;
@@ -11,7 +12,8 @@ const Container = styled.div`
 `;
 
 const Amount = () => {
-  return <Container>0</Container>;
+  const { bill } = useBill();
+  return <Container>{bill.amount}</Container>;
 };
 
 export default Amount;

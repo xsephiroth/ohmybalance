@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useBill } from "./BillContext";
 
 const Container = styled.textarea`
   outline: none;
@@ -12,11 +13,19 @@ const Container = styled.textarea`
 `;
 
 const Remark = () => {
+  const { bill, setBill } = useBill();
+
+  const handleChange = (e) => {
+    e.persist();
+    setBill((b) => ({ ...b, remark: e.target.value }));
+  };
+
   return (
     <Container
       rows={2}
-      value={"abc"}
-      onChange={(e) => console.log(e.target.value)}
+      value={bill.remark}
+      onChange={handleChange}
+      placeholder="备注"
     />
   );
 };

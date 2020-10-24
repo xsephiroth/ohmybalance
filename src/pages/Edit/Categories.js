@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { useLongClick, useCategories, useMutateCategories } from "./hooks";
+import { useBill } from "./BillContext";
 
 const Container = styled.div`
   flex: 1;
@@ -136,13 +137,28 @@ const AddCagetory = ({ showInput, setShowInput }) => {
 };
 
 const Categories = () => {
-  const { data: categories } = useCategories();
-  const [categorySelect, setCategorySelect] = useState("");
   const [categoryDeleteSelect, setCategoryDeleteSelect] = useState("");
   const [showAddInput, setShowAddInput] = useState(false);
 
+  const {
+    bill: { type, category: categorySelect },
+    setBill,
+  } = useBill();
+
+  const { expense, income } = useCategories();
+  const categories = useMemo(() => {
+    switch (type) {
+      case "EXPENSE":
+        return expense;
+      case "INCOME":
+        return income;
+      default:
+        return [];
+    }
+  }, [type, expense, income]);
+
   const handleReset = () => {
-    setCategorySelect("");
+    setBill((b) => ({ ...b, category: "" }));
     setCategoryDeleteSelect("");
     setShowAddInput(false);
   };
@@ -151,7 +167,10 @@ const Categories = () => {
 
   const handleCategoryClick = (category) => {
     if (categoryDeleteSelect !== category) {
-      setCategorySelect((c) => (c === category ? "" : category));
+      setBill((b) => ({
+        ...b,
+        category: b.category === category ? "" : category,
+      }));
       setCategoryDeleteSelect("");
       setShowAddInput(false);
     } else {
@@ -161,7 +180,7 @@ const Categories = () => {
 
   const handleCategoryLongClick = (category) => {
     setCategoryDeleteSelect(category);
-    setCategorySelect("");
+    setBill((b) => ({ ...b, category: "" }));
     setShowAddInput(false);
   };
 

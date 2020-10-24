@@ -11,7 +11,7 @@ const getOrCreateUserCategoryRecord = async () => {
 
   const { total } = await c.count();
   if (total === 0) {
-    const res = await c.add({ categories: [] });
+    const res = await c.add({ expense: [], income: [] });
     return res;
   }
 
@@ -22,8 +22,8 @@ const getOrCreateUserCategoryRecord = async () => {
 };
 
 export const fetchCategories = async () => {
-  const res = await getOrCreateUserCategoryRecord();
-  return res?.categories || [];
+  const { expense, income } = await getOrCreateUserCategoryRecord();
+  return { expense, income };
 };
 
 export const updateCategories = async (categories) => {
@@ -52,12 +52,13 @@ const extractDate = (date) => {
   return [year, month];
 };
 
-export const createBill = async ({ category, amount, date, remark }) => {
+export const createBill = async ({ type, category, amount, date, remark }) => {
   // 冗余字段，便于列表页面的查询获取
   const [year, month] = extractDate(date);
 
   const c = db.collection(collectionBills);
   await c.add({
+    type,
     category,
     amount,
     remark,
@@ -67,9 +68,9 @@ export const createBill = async ({ category, amount, date, remark }) => {
   });
 };
 
-export const updateBill = async (billId, bill) => {
+export const updateBill = async (bill) => {
   // 冗余字段，便于列表页面的查询获取
   const [year, month] = extractDate(bill.date);
   const c = db.collection(collectionBills);
-  await c.doc(billId).set({ ...bill, year, month });
+  await c.doc(bill._id).set({ ...bill, year, month });
 };

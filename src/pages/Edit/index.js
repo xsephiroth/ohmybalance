@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Layout, NavigationBar } from "../../components";
+import { BillProvider } from "./BillContext";
 import Categories from "./Categories";
 import Remark from "./Remark";
 import DatePicker from "./DatePicker";
@@ -30,15 +31,17 @@ const Edit = () => {
         center={<NavigationBar.Center>Hello</NavigationBar.Center>}
       />
       <Wrapper>
-        <Categories />
-        <Block>
-          <Info>
-            <Remark />
-            <DatePicker />
-            <Amount />
-          </Info>
-          <AmountKeyboard />
-        </Block>
+        <BillProvider>
+          <Categories />
+          <Block>
+            <Info>
+              <Remark />
+              <DatePicker />
+              <Amount />
+            </Info>
+            <AmountKeyboard />
+          </Block>
+        </BillProvider>
       </Wrapper>
     </Layout>
   );
