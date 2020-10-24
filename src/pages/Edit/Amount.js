@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useBill } from "./BillContext";
+import { useRecoilValue } from "recoil";
+import { amountState } from "./state";
 
 const Container = styled.div`
   flex: 1;
@@ -12,8 +13,8 @@ const Container = styled.div`
 `;
 
 const Amount = () => {
-  const { bill } = useBill();
-  return <Container>{bill.amount}</Container>;
+  const amount = useRecoilValue(amountState);
+  return <Container>{amount}</Container>;
 };
 
 export default Amount;

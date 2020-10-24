@@ -1,8 +1,15 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMutation } from "react-query";
 import styled, { useTheme } from "styled-components";
-import { useBill } from "./BillContext";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import {
+  amountState,
+  billSelector,
+  billTypeState,
+  isBillCreateSelector,
+  remarkState,
+} from "./state";
 import { createBill, updateBill } from "../../api";
 
 const Container = styled.div`
@@ -39,9 +46,9 @@ const SaveKey = styled(Key)`
 const useSaveBtnColor = (type) => {
   const theme = useTheme();
   switch (type) {
-    case "EXPENSE":
+    case "expense":
       return theme.color.expense;
-    case "INCOME":
+    case "income":
       return theme.color.income;
     default:
       return "";
@@ -64,21 +71,30 @@ const useKeyboardHide = () => {
   return hide;
 };
 
-const AmountKeyboard = memo(() => {
+const useReset = () => {
+  const resetAmount = useResetRecoilState(amountState);
+  const resetRemark = useResetRecoilState(remarkState);
+  return useCallback(() => {
+    resetAmount();
+    resetRemark();
+  }, [resetAmount, resetRemark]);
+};
+
+const AmountKeyboard = () => {
   // 手机设备输入法弹出时不显示金额输入部分
   const hide = useKeyboardHide();
-  const saveBtnColor = useSaveBtnColor("EXPENSE");
 
-  const { bill, setBill, reset } = useBill();
-  const isUpdate = !!bill._id;
-  const [text, setText] = useState(bill.amount.toString());
+  const isBillCreate = useRecoilValue(isBillCreateSelector);
+
+  const billType = useRecoilValue(billTypeState);
+  const saveBtnColor = useSaveBtnColor(billType);
+
+  const [amount, setAmount] = useRecoilState(amountState);
+  const [text, setText] = useState(amount.toString());
 
   useEffect(() => {
-    setBill((b) => ({
-      ...b,
-      amount: parseFloat(text),
-    }));
-  }, [setBill, text]);
+    setAmount(parseFloat(text));
+  }, [setAmount, text]);
 
   const handleNumClick = (n) => () => {
     setText((t) => {
@@ -111,13 +127,17 @@ const AmountKeyboard = memo(() => {
     onSuccess: () => history.replace("/"),
   });
 
+  const bill = useRecoilValue(billSelector);
+
   const handleSave = () => {
-    if (isUpdate) {
-      mutateUpdateBill(bill);
-    } else {
+    if (isBillCreate) {
       mutateCreateBill(bill);
+    } else {
+      mutateUpdateBill(bill);
     }
   };
+
+  const reset = useReset();
 
   const [mutateCreateBillNext] = useMutation(createBill, {
     onSuccess: () => {
@@ -144,8 +164,8 @@ const AmountKeyboard = memo(() => {
         <Key onClick={handleNumClick(7)}>7</Key>
         <Key onClick={handleNumClick(8)}>8</Key>
         <Key onClick={handleNumClick(9)}>9</Key>
-        <Key onClick={handleSaveNext} disabled={isUpdate}>
-          {isUpdate ? "" : "再记"}
+        <Key onClick={handleSaveNext} disabled={!isBillCreate}>
+          {!isBillCreate ? "" : "再记"}
         </Key>
         <Key onClick={handleNumClick(0)}>0</Key>
         <Key onClick={handleNumClick(".")}>.</Key>
@@ -155,6 +175,6 @@ const AmountKeyboard = memo(() => {
       </InputWrapper>
     </Container>
   );
-});
+};
 
 export default AmountKeyboard;

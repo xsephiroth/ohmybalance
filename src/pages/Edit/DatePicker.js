@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { useBill } from "./BillContext";
+import { dateState } from "./state";
 
 const Button = styled.button`
   border: none;
@@ -29,25 +30,22 @@ const DateInput = styled.input.attrs({ type: "date" })`
 `;
 
 const DatePicker = () => {
-  const { bill, setBill } = useBill();
+  const [date, setDate] = useRecoilState(dateState);
 
-  const date = useMemo(() => {
-    const d = bill.date;
-    return `${d.getFullYear()}-${(d.getMonth() + 1)
+  const dateText = useMemo(() => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
       .toString()
-      .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
-  }, [bill.date]);
-
-  const handleChange = (e) => {
-    e.persist();
-    setBill((b) => ({ ...b, date: new Date(e.target.value) }));
-  };
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+  }, [date]);
 
   return (
     <>
       <Button>
-        <DateInput value={date} onChange={handleChange} />
-        {date}
+        <DateInput
+          value={dateText}
+          onChange={(e) => setDate(new Date(e.target.value))}
+        />
+        {dateText}
       </Button>
     </>
   );

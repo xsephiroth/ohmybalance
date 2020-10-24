@@ -1,6 +1,7 @@
 import React from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { useBill } from "./BillContext";
+import { remarkState } from "./state";
 
 const Container = styled.textarea`
   outline: none;
@@ -13,18 +14,13 @@ const Container = styled.textarea`
 `;
 
 const Remark = () => {
-  const { bill, setBill } = useBill();
-
-  const handleChange = (e) => {
-    e.persist();
-    setBill((b) => ({ ...b, remark: e.target.value }));
-  };
+  const [remark, setRemark] = useRecoilState(remarkState);
 
   return (
     <Container
       rows={2}
-      value={bill.remark}
-      onChange={handleChange}
+      value={remark}
+      onChange={(e) => setRemark(e.target.value)}
       placeholder="备注"
     />
   );

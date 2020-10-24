@@ -29,7 +29,7 @@ export const fetchCategories = async () => {
 export const updateCategories = async (categories) => {
   const { _id } = await getOrCreateUserCategoryRecord();
   const c = db.collection(collectionCategories);
-  await c.doc(_id).update({ categories });
+  await c.doc(_id).update(categories);
 };
 
 export const fetchMonthBills = async ({ year, month }) => {

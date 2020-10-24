@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Layout, NavigationBar } from "../../components";
-import { BillProvider } from "./BillContext";
+import BillTypeSwitch from "./BillTypeSwitch";
 import Categories from "./Categories";
 import Remark from "./Remark";
 import DatePicker from "./DatePicker";
@@ -28,20 +28,22 @@ const Edit = () => {
     <Layout>
       <NavigationBar
         start={<NavigationBar.Back />}
-        center={<NavigationBar.Center>Hello</NavigationBar.Center>}
+        center={
+          <NavigationBar.Center>
+            <BillTypeSwitch />
+          </NavigationBar.Center>
+        }
       />
       <Wrapper>
-        <BillProvider>
-          <Categories />
-          <Block>
-            <Info>
-              <Remark />
-              <DatePicker />
-              <Amount />
-            </Info>
-            <AmountKeyboard />
-          </Block>
-        </BillProvider>
+        <Categories />
+        <Block>
+          <Info>
+            <Remark />
+            <DatePicker />
+            <Amount />
+          </Info>
+          <AmountKeyboard />
+        </Block>
       </Wrapper>
     </Layout>
   );
