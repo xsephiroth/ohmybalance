@@ -204,7 +204,7 @@ const AddCagetory = ({ showInput, setShowInput }) => {
 };
 
 const Categories = () => {
-  const { data: categories, isLoading } = useCategories();
+  const { data: categories } = useCategories();
   const [categorySelect, setCategorySelect] = useState("");
   const [categoryDeleteSelect, setCategoryDeleteSelect] = useState("");
   const [showAddInput, setShowAddInput] = useState(false);
@@ -233,13 +233,9 @@ const Categories = () => {
     setShowAddInput(false);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Container onClick={handleReset}>
-      {categories.map((category) => (
+      {categories?.map((category) => (
         <CategoryBtn
           key={category}
           category={category}
