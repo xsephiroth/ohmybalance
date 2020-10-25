@@ -74,3 +74,9 @@ export const updateBill = async (bill) => {
   const c = db.collection(collectionBills);
   await c.doc(bill._id).set({ ...bill, year, month });
 };
+
+export const fetchBills = async () => {
+  const c = db.collection(collectionBills);
+  const { data: bills } = await c.orderBy("date", "desc").get();
+  return bills;
+};

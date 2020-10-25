@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { dateState } from "./state";
+import { formatDateText } from "../../utils";
 
 const Button = styled.button`
   border: none;
@@ -31,12 +32,7 @@ const DateInput = styled.input.attrs({ type: "date" })`
 
 const DatePicker = () => {
   const [date, setDate] = useRecoilState(dateState);
-
-  const dateText = useMemo(() => {
-    return `${date.getFullYear()}-${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-  }, [date]);
+  const dateText = formatDateText(date);
 
   return (
     <>

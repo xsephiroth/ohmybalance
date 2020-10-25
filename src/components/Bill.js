@@ -63,10 +63,10 @@ const Amount = styled.div`
   align-items: center;
 
   color: ${({ theme, type }) =>
-    type === "INCOME" ? theme.color.income : theme.color.expense};
+    type === "income" ? theme.color.income : theme.color.expense};
 
   ::before {
-    content: "${({ type }) => (type === "INCOME" ? "+" : "-")}";
+    content: "${({ type }) => (type === "income" ? "+" : "-")}";
   }
 `;
 
@@ -76,8 +76,8 @@ const Bill = ({ bill }) => {
   return (
     <Container>
       <Icon>
-        {type === "INCOME" && <DotIncome />}
-        {type === "EXPENSE" && <DotExpense />}
+        {type === "income" && <DotIncome />}
+        {type === "expense" && <DotExpense />}
       </Icon>
       <Main>
         <div>
