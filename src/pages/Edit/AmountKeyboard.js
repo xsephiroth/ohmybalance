@@ -111,7 +111,8 @@ const AmountKeyboard = () => {
     setText((t) => {
       const l = t.split("");
       l.pop();
-      return l.join("");
+      const v = l.join("");
+      return v === "" ? "0" : v;
     });
   };
 
