@@ -57,7 +57,7 @@ const useSaveBtnColor = (type) => {
 
 const useKeyboardHide = () => {
   const [hide, setHide] = useState(false);
-  const defaultHeight = window.innerHeight;
+  const defaultHeight = window.innerHeight - 100;
 
   useEffect(() => {
     const check = () => {
