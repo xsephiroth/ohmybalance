@@ -75,8 +75,13 @@ export const updateBill = async (bill) => {
   await c.doc(bill._id).set({ ...bill, year, month });
 };
 
-export const fetchBills = async () => {
+export const fetchBills = async (key, skip = 0) => {
+  console.log({ key, skip });
   const c = db.collection(collectionBills);
-  const { data: bills } = await c.orderBy("date", "desc").get();
+  const { data: bills } = await c
+    .orderBy("date", "desc")
+    .limit(2)
+    .skip(skip)
+    .get();
   return bills;
 };
