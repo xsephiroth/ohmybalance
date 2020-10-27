@@ -85,3 +85,18 @@ export const fetchBills = async (key, skip = 0) => {
     .get();
   return bills;
 };
+
+export const login = async (username, password) => {
+  console.log("login", username, password);
+  return tcb.callFunction({
+    name: "ohmybalance-auth",
+    data: { action: "login", username, password },
+  });
+};
+
+export const register = async (username, password) => {
+  return tcb.callFunction({
+    name: "ohmybalance-auth",
+    data: { action: "register", username, password },
+  });
+};

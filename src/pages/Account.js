@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { Layout } from "../components";
+import { login, register } from "../api";
 
 const Container = styled.div`
   display: flex;
@@ -53,6 +54,9 @@ const Account = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    login(email, password)
+      .then((res) => console.log(res))
+      .catch((err) => console.error(err));
   };
 
   return (
