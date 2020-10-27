@@ -82,7 +82,7 @@ const Bill = ({ bill }) => {
       </Icon>
       <Main>
         <div>
-          <Category>{category}</Category>
+          <Category>{category || "未分类"}</Category>
           <Remark>{remark}</Remark>
         </div>
         <Amount type={type}>{amount}</Amount>
