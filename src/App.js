@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
-import { Home, Edit } from "./pages";
+import { Home, Edit, Account } from "./pages";
 import tcb from "./tcb";
 
 const theme = {
@@ -62,6 +62,7 @@ const App = () => {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/add" component={Edit} />
+              <Route path="/account" component={Account} />
             </Switch>
           </Router>
         )}
