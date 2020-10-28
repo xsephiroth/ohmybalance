@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { dateState } from "./state";
+import { billDateState } from "./state";
 import { formatDateText } from "../../utils";
 
 const Button = styled.button`
@@ -30,8 +30,8 @@ const DateInput = styled.input.attrs({ type: "date" })`
   }
 `;
 
-const DatePicker = () => {
-  const [date, setDate] = useRecoilState(dateState);
+const DatePicker = React.memo(() => {
+  const [date, setDate] = useRecoilState(billDateState);
   const dateText = formatDateText(date);
 
   return (
@@ -45,6 +45,6 @@ const DatePicker = () => {
       </Button>
     </>
   );
-};
+});
 
 export default DatePicker;

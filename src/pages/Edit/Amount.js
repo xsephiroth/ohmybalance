@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
-import { amountState } from "./state";
+import { billState } from "./state";
 
 const Container = styled.div`
   flex: 1;
@@ -12,9 +12,9 @@ const Container = styled.div`
   padding: 8px;
 `;
 
-const Amount = () => {
-  const amount = useRecoilValue(amountState);
+const Amount = React.memo(() => {
+  const { amount } = useRecoilValue(billState);
   return <Container>{amount}</Container>;
-};
+});
 
 export default Amount;

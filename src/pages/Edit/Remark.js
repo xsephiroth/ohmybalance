@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { remarkState } from "./state";
+import { billRemarkState } from "./state";
 
 const Container = styled.textarea`
   outline: none;
@@ -13,8 +13,8 @@ const Container = styled.textarea`
   resize: none;
 `;
 
-const Remark = () => {
-  const [remark, setRemark] = useRecoilState(remarkState);
+const Remark = React.memo(() => {
+  const [remark, setRemark] = useRecoilState(billRemarkState);
 
   return (
     <Container
@@ -24,6 +24,6 @@ const Remark = () => {
       placeholder="备注"
     />
   );
-};
+});
 
 export default Remark;

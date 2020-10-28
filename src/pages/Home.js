@@ -35,7 +35,7 @@ const Home = () => {
   const skipRef = useRef(0);
 
   const query = useInfiniteQuery("bills", fetchBills, {
-    staleTime: 10 * 60 * 1000,
+    staleTime: 60 * 1000,
   });
   const {
     data: groups,

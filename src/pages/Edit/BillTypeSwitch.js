@@ -8,7 +8,7 @@ const Container = styled.div`
   grid-gap: 5px;
 `;
 
-const BillTypeSwitch = () => {
+const BillTypeSwitch = React.memo(() => {
   const [billType, setBillType] = useRecoilState(billTypeState);
 
   return (
@@ -31,6 +31,6 @@ const BillTypeSwitch = () => {
       </label>
     </Container>
   );
-};
+});
 
 export default BillTypeSwitch;

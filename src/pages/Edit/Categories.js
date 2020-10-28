@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import produce from "immer";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueryCache } from "react-query";
 import { fetchCategories, updateCategories } from "../../api";
 import {
-  billTypeCategoriesSelector,
+  billCategoryState,
+  billState,
   billTypeState,
   categoriesState,
-  categoryState,
 } from "./state";
 
 const Container = styled.div`
@@ -141,24 +142,11 @@ export const useLongClick = (duration = 500, onClick, onLongClick) => {
   return ref;
 };
 
-// 修改BillType的categories并更新完整categories的数据
-export const useBillTypeCategoriesMutation = (config = {}) => {
-  const billType = useRecoilValue(billTypeState);
-  const anotherBillType = billType === "expense" ? "income" : "expense";
-  const [categories, setCategories] = useRecoilState(categoriesState);
-
-  return useMutation(async (newBillTypeCategories) => {
-    const newCategories = {
-      [billType]: newBillTypeCategories,
-      [anotherBillType]: [...categories[anotherBillType]],
-    };
-    try {
-      await updateCategories(newCategories);
-      setCategories(newCategories);
-    } catch (e) {
-      throw e;
-    }
-  }, config);
+const useInvalidateCategories = () => {
+  const qc = useQueryCache();
+  return useCallback(() => {
+    qc.invalidateQueries("categories");
+  }, [qc]);
 };
 
 const AddCagetory = React.memo(({ showInput, setShowInput }) => {
@@ -169,21 +157,32 @@ const AddCagetory = React.memo(({ showInput, setShowInput }) => {
     !showInput && setNewCategory("");
   }, [showInput]);
 
-  const categories = useRecoilValue(billTypeCategoriesSelector);
-  const [updateCategories] = useBillTypeCategoriesMutation();
+  const billType = useRecoilValue(billTypeState);
+  const categories = useRecoilValue(categoriesState);
+
+  const invalidateCategories = useInvalidateCategories();
+  const [mutateCategories] = useMutation(updateCategories, {
+    onSettled: () => {
+      setShowInput(false);
+      invalidateCategories();
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // 避免重复添加同一类目
-    if (categories.includes(newCategory)) {
+    if ((categories?.[billType] || []).includes(newCategory)) {
       setShowInput(false);
       return;
     }
 
-    // 同步更新
-    updateCategories([...categories, newCategory], {
-      onSettled: () => setShowInput(false),
-    });
+    // 更新
+    mutateCategories(
+      produce(categories, (categoriesSnapshot) => {
+        categoriesSnapshot[billType].push(newCategory);
+      })
+    );
   };
 
   return (
@@ -216,37 +215,49 @@ const Categories = React.memo(() => {
   const [categoryDeleteSelect, setCategoryDeleteSelect] = useState("");
   const [showAddInput, setShowAddInput] = useState(false);
 
+  const setBill = useSetRecoilState(billState);
+  const billType = useRecoilValue(billTypeState);
+  const [currentCategory, setCurrentCategory] = useRecoilState(
+    billCategoryState
+  );
+  const [categories, setCategories] = useRecoilState(categoriesState);
+  const typeCategories = categories[billType];
+
   // 同步线上的categories数据
-  const setAllCategories = useSetRecoilState(categoriesState);
   useQuery("categories", fetchCategories, {
     refetchOnWindowFocus: false,
-    onSuccess: (categories) => setAllCategories(categories),
+    onSuccess: (categories) => setCategories(categories),
   });
 
-  const [currentCategory, setCurrentCategory] = useRecoilState(categoryState);
-  const categories = useRecoilValue(billTypeCategoriesSelector);
+  const invalidateCategories = useInvalidateCategories();
+  const [mutateCategories] = useMutation(updateCategories, {
+    onSettled: () => {
+      setShowAddInput(false);
+      invalidateCategories();
+    },
+  });
 
   const handleReset = () => {
-    setCurrentCategory("");
+    setBill((b) => ({ ...b, category: "" }));
     setCategoryDeleteSelect("");
     setShowAddInput(false);
   };
 
-  const [updateBillTypeCategories] = useBillTypeCategoriesMutation();
   const handleCategoryClick = (category) => {
     if (categoryDeleteSelect !== category) {
       // 选择类目或反选
-      setCurrentCategory((c) => (c === category ? "" : category));
+      setCurrentCategory(currentCategory === category ? "" : category);
       setCategoryDeleteSelect("");
       setShowAddInput(false);
     } else {
       // 准备删除时再次点击确认
       // 同步更新
-      updateBillTypeCategories(
-        categories.filter((c) => c !== category),
-        {
-          onSettled: () => setShowAddInput(false),
-        }
+      mutateCategories(
+        produce(categories, (categoriesSnapshot) => {
+          categoriesSnapshot[billType] = categoriesSnapshot[billType].filter(
+            (c) => c !== category
+          );
+        })
       );
     }
   };
@@ -259,7 +270,7 @@ const Categories = React.memo(() => {
 
   return (
     <Container onClick={handleReset}>
-      {categories?.map((category) => (
+      {typeCategories?.map((category) => (
         <CategoryBtn
           key={category}
           category={category}
