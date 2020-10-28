@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useQuery } from "react-query";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { Layout, NavigationBar } from "../../components";
+import { fetchBill } from "../../api";
 import BillTypeSwitch from "./BillTypeSwitch";
 import Categories from "./Categories";
 import Remark from "./Remark";
 import DatePicker from "./DatePicker";
 import Amount from "./Amount";
 import AmountKeyboard from "./AmountKeyboard";
-import { useResetRecoilState } from "recoil";
 import { billState } from "./state";
 
 const Wrapper = styled.div`
@@ -25,7 +27,16 @@ const Info = styled.div`
   margin-bottom: 5px;
 `;
 
-const Edit = () => {
+const Edit = ({ history }) => {
+  const setBill = useSetRecoilState(billState);
+  const id = new URLSearchParams(history.location.search).get("id");
+  useQuery(["bill", id], fetchBill, {
+    enabled: !!id,
+    staleTime: Infinity,
+    cacheTime: 0,
+    onSuccess: (bill) => setBill(bill),
+  });
+
   const resetBill = useResetRecoilState(billState);
   useEffect(() => {
     return resetBill;

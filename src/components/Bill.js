@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -7,6 +8,7 @@ const Container = styled.div`
   align-items: center;
   height: 4em;
   padding: 5px;
+  cursor: pointer;
 `;
 
 const Icon = styled.div`
@@ -72,10 +74,11 @@ const Amount = styled.div`
 `;
 
 const Bill = ({ bill }) => {
+  const history = useHistory();
   const { type, category, remark, amount } = bill;
 
   return (
-    <Container>
+    <Container onClick={() => history.push(`/add?id=${bill._id}`)}>
       <Icon>
         {type === "income" && <DotIncome />}
         {type === "expense" && <DotExpense />}

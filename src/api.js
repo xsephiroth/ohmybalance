@@ -38,7 +38,7 @@ export const fetchMonthBills = async ({ year, month }) => {
   return data;
 };
 
-export const fetchBill = async (billId) => {
+export const fetchBill = async (_, billId) => {
   const c = db.collection(collectionBills);
   const {
     data: [bill],
@@ -72,7 +72,16 @@ export const updateBill = async (bill) => {
   // 冗余字段，便于列表页面的查询获取
   const [year, month] = extractDate(bill.date);
   const c = db.collection(collectionBills);
-  await c.doc(bill._id).set({ ...bill, year, month });
+  const { category, date, amount, remark, type } = bill;
+  await c.doc(bill._id).update({
+    category,
+    date,
+    amount,
+    remark,
+    type,
+    year,
+    month,
+  });
 };
 
 export const fetchBills = async (key, skip = 0) => {
