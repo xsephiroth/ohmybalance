@@ -12,7 +12,7 @@ const getOrCreateUserCategoryRecord = async () => {
   const { total } = await c.count();
   if (total === 0) {
     const defaultCategories = { expense: [], income: [] };
-    const res = await c.add(defaultCategories);
+    await c.add(defaultCategories);
     return defaultCategories;
   }
 
@@ -84,6 +84,11 @@ export const updateBill = async (bill) => {
     year,
     month,
   });
+};
+
+export const deleteBill = async (billId) => {
+  const c = db.collection(collectionBills);
+  await c.doc(billId).remove();
 };
 
 export const fetchBills = async (key, skip = 0) => {

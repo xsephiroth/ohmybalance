@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import styled from "styled-components";
+import { useMutation, useQueryCache } from "react-query";
+import styled, { css } from "styled-components";
+import { useLongClick } from "../hooks";
+import { deleteBill } from "../api";
 
 const Container = styled.div`
   display: flex;
@@ -9,6 +12,8 @@ const Container = styled.div`
   height: 4em;
   padding: 5px;
   cursor: pointer;
+
+  position: relative; // for extra
 `;
 
 const Icon = styled.div`
@@ -73,24 +78,65 @@ const Amount = styled.div`
   }
 `;
 
+const ExtraButton = styled.button`
+  border: none;
+  outline: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+
+  ${(props) =>
+    props.isDelete &&
+    css`
+      color: white;
+      background-color: #eb4d4b;
+    `}
+`;
+
 const Bill = ({ bill }) => {
   const history = useHistory();
+  const [showExtra, setShowExtra] = useState(false);
+
+  const longClickRef = useLongClick(
+    500,
+    () => history.push(`/add?id=${bill._id}`),
+    () => setShowExtra(true)
+  );
+
+  const onCancel = () => setShowExtra(false);
+
+  const queryCache = useQueryCache();
+  const [mutateDeleteBill] = useMutation(deleteBill, {
+    onSuccess: () => queryCache.invalidateQueries("bills"),
+  });
+  const onDelete = () => mutateDeleteBill(bill._id);
+
   const { type, category, remark, amount } = bill;
 
   return (
-    <Container onClick={() => history.push(`/add?id=${bill._id}`)}>
-      <Icon>
-        {type === "income" && <DotIncome />}
-        {type === "expense" && <DotExpense />}
-      </Icon>
-      <Main>
-        <div>
-          <Category>{category || "未分类"}</Category>
-          <Remark>{remark}</Remark>
-        </div>
-        <Amount type={type}>{amount}</Amount>
-      </Main>
-    </Container>
+    <>
+      {showExtra ? (
+        <Container>
+          <ExtraButton onClick={onDelete} isDelete>
+            删除
+          </ExtraButton>
+          <ExtraButton onClick={onCancel}>取消</ExtraButton>
+        </Container>
+      ) : (
+        <Container onClick={(e) => e.stopPropagation()} ref={longClickRef}>
+          <Icon>
+            {type === "income" && <DotIncome />}
+            {type === "expense" && <DotExpense />}
+          </Icon>
+          <Main>
+            <div>
+              <Category>{category || "未分类"}</Category>
+              <Remark>{remark}</Remark>
+            </div>
+            <Amount type={type}>{amount}</Amount>
+          </Main>
+        </Container>
+      )}
+    </>
   );
 };
 
