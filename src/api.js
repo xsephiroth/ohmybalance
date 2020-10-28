@@ -11,8 +11,9 @@ const getOrCreateUserCategoryRecord = async () => {
 
   const { total } = await c.count();
   if (total === 0) {
-    const res = await c.add({ expense: [], income: [] });
-    return res;
+    const defaultCategories = { expense: [], income: [] };
+    const res = await c.add(defaultCategories);
+    return defaultCategories;
   }
 
   const {
