@@ -66,6 +66,7 @@ export const createBill = async ({ type, category, amount, date, remark }) => {
     date,
     year,
     month,
+    createdAt: new db.serverDate(),
   });
 };
 
@@ -90,6 +91,7 @@ export const fetchBills = async (key, skip = 0) => {
   const c = db.collection(collectionBills);
   const { data: bills } = await c
     .orderBy("date", "desc")
+    .orderBy("createdAt", "desc")
     .limit(2)
     .skip(skip)
     .get();
