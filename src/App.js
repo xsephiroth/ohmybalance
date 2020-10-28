@@ -35,14 +35,19 @@ const useAuth = () => {
   const [loginState, setLoginState] = useState(null);
 
   useEffect(() => {
-    if (!tcb.auth().hasLoginState()) {
-      tcb
-        .auth()
-        .anonymousAuthProvider()
-        .signIn()
-        .then((res) => setLoginState(res))
-        .catch(console.error);
+    const state = tcb.auth().hasLoginState();
+
+    if (state) {
+      setLoginState(state);
+      return;
     }
+
+    tcb
+      .auth()
+      .anonymousAuthProvider()
+      .signIn()
+      .then((res) => setLoginState(res))
+      .catch(console.error);
   }, []);
 
   return loginState;

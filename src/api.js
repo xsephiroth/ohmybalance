@@ -104,11 +104,13 @@ export const fetchBills = async (key, skip = 0) => {
 };
 
 export const login = async (username, password) => {
-  console.log("login", username, password);
-  return tcb.callFunction({
+  const {
+    result: { ticket },
+  } = await tcb.callFunction({
     name: "ohmybalance-auth",
     data: { action: "login", username, password },
   });
+  await tcb.auth().customAuthProvider().signIn(ticket);
 };
 
 export const register = async (username, password) => {

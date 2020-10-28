@@ -54,9 +54,16 @@ const Account = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(email, password)
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
+
+    if (formType === "login") {
+      login(email, password)
+        .then(({ result: { ticket } }) => {})
+        .catch((err) => console.error(err));
+    } else {
+      register(email, password)
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err));
+    }
   };
 
   return (
