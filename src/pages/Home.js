@@ -1,62 +1,60 @@
-import React, { useRef, useMemo } from "react";
-import { useHistory } from "react-router-dom";
-import { useInfiniteQuery } from "react-query";
+import React, { useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import { Layout, Card, Bill, FloatButton } from "../components";
-import { fetchBills } from "../api";
+import { fetchMonthBills } from "../api";
 import { formatDateText } from "../utils";
 
-const useGroupDateBills = (groups = []) => {
+const useGroupDateBills = (bills = []) => {
   const groupDateBills = useMemo(() => {
     const final = [];
     let currentDate;
     let cursor; // current date bills cursor
 
-    groups.map((group) =>
-      group.map((bill) => {
-        const billDateText = formatDateText(bill.date);
-        if (currentDate !== billDateText) {
-          // is new date
-          currentDate = billDateText;
-          cursor = [];
-          final.push({ date: billDateText, bills: cursor });
-        }
-        cursor.push(bill);
-      })
-    );
+    bills.forEach((bill) => {
+      const billDateText = formatDateText(bill.date);
+      if (currentDate !== billDateText) {
+        // is new date
+        currentDate = billDateText;
+        cursor = [];
+        final.push({ date: billDateText, bills: cursor });
+      }
+      cursor.push(bill);
+    });
 
     return final;
-  }, [groups]);
+  }, [bills]);
 
   return groupDateBills;
 };
 
-const Home = () => {
-  const history = useHistory();
-  const skipRef = useRef(0);
+const useYearMonth = () => {
+  const [year, setYear] = useState();
+  const [month, setMonth] = useState();
 
-  const query = useInfiniteQuery("bills", fetchBills, {
-    staleTime: 60 * 1000,
+  useEffect(() => {
+    const now = new Date();
+    setYear(now.getFullYear());
+    setMonth(now.getMonth() + 1);
+  }, []);
+  return [year, month];
+};
+
+const Home = ({ history }) => {
+  const [year, month] = useYearMonth();
+  const query = useQuery(["monthBills", year, month], fetchMonthBills, {
+    enabled: year && month,
   });
-  const {
-    data: groups,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-    fetchMore,
-  } = query;
+  const { data: bills, isLoading, isSuccess, isError, error } = query;
 
-  const loadMore = () => {
-    skipRef.current += 2;
-    fetchMore(skipRef.current);
-  };
-
-  const groupDateBills = useGroupDateBills(groups);
+  const groupDateBills = useGroupDateBills(bills);
 
   return (
     <Layout>
       {isLoading && <p>Loading...</p>}
       {isError && <p>Error: {error.message}</p>}
+      {isSuccess && groupDateBills.length === 0 && (
+        <p style={{ color: "white" }}>暂无账单</p>
+      )}
       {isSuccess &&
         groupDateBills.map((dateBills) => (
           <Card key={dateBills.date}>
@@ -68,7 +66,6 @@ const Home = () => {
             </Card.Body>
           </Card>
         ))}
-      <button onClick={loadMore}>More</button>
       <FloatButton onClick={() => history.push("/add")}>+</FloatButton>
     </Layout>
   );

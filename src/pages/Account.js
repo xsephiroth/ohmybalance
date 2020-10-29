@@ -47,7 +47,7 @@ const SwitchLink = styled.a`
   margin-top: 5px;
 `;
 
-const Account = () => {
+const Account = ({ history }) => {
   const [formType, setFormType] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,7 +57,7 @@ const Account = () => {
 
     if (formType === "login") {
       login(email, password)
-        .then(({ result: { ticket } }) => {})
+        .then(() => history.replace("/"))
         .catch((err) => console.error(err));
     } else {
       register(email, password)

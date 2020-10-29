@@ -33,9 +33,13 @@ export const updateCategories = async (categories) => {
   await c.doc(_id).update(categories);
 };
 
-export const fetchMonthBills = async ({ year, month }) => {
+export const fetchMonthBills = async (_, year, month) => {
   const c = db.collection(collectionBills);
-  const { data } = await c.where({ year, month }).get();
+  const { data } = await c
+    .where({ year, month })
+    .orderBy("date", "desc")
+    .orderBy("createdAt", "desc")
+    .get();
   return data;
 };
 

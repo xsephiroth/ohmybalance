@@ -14,7 +14,10 @@ const Container = styled.div`
   }
 `;
 
-const Header = styled.div``;
+const Header = styled.div`
+  color: ${(props) => props.theme.color.primary};
+  padding: 10px;
+`;
 
 const Body = styled.div``;
 

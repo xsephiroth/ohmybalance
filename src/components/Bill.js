@@ -106,7 +106,7 @@ const Bill = ({ bill }) => {
 
   const queryCache = useQueryCache();
   const [mutateDeleteBill] = useMutation(deleteBill, {
-    onSuccess: () => queryCache.invalidateQueries("bills"),
+    onSuccess: () => queryCache.invalidateQueries("monthBills"),
   });
   const onDelete = () => mutateDeleteBill(bill._id);
 
