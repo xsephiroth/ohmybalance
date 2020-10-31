@@ -37,6 +37,9 @@ const hasUsername = async (username) => {
 
 const register = async (event) => {
   let { username, password } = event;
+  if (!username && !password) {
+    return { error: "invalid params" };
+  }
   username = username.trim();
   if (username === "") {
     return { error: "invalid username" };
@@ -69,14 +72,22 @@ const register = async (event) => {
 
 const login = async (event) => {
   let { username, password } = event;
+  if (!username && !password) {
+    return { error: "invalid params" };
+  }
   username = username.trim();
   if (username === "") {
     return { error: "invalid username" };
   }
 
+  const queryRes = await db.collection(collection).where({ username }).get();
+  if (!queryRes.data.password) {
+    console.log("user not exists");
+    return { error: "login failed" };
+  }
   const {
     data: [{ password: hash }],
-  } = await db.collection(collection).where({ username }).get();
+  } = queryRes;
 
   if (!(await bcrypt.compare(password, hash))) {
     return { error: "login failed" };
