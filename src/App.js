@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
-import { Home, Edit, Account } from "./pages";
+import { Home, Bill, Account } from "./pages";
 import { auth } from "./tcb";
 
 const theme = {
@@ -66,8 +66,8 @@ const App = () => {
             <PrivateRoute exact path="/">
               <Home />
             </PrivateRoute>
-            <PrivateRoute path="/add">
-              <Edit />
+            <PrivateRoute path="/bill">
+              <Bill />
             </PrivateRoute>
             <Route path="/account" component={Account} />
           </Switch>

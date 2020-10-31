@@ -98,7 +98,7 @@ const Bill = ({ bill }) => {
 
   const longClickRef = useLongClick(
     500,
-    () => history.push(`/add?id=${bill._id}`),
+    () => history.push(`/bill?id=${bill._id}`),
     () => setShowExtra(true)
   );
 

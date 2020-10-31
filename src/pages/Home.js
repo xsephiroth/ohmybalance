@@ -68,7 +68,7 @@ const Home = () => {
             </Card.Body>
           </Card>
         ))}
-      <FloatButton onClick={() => history.push("/add")}>+</FloatButton>
+      <FloatButton onClick={() => history.push("/bill")}>+</FloatButton>
     </Layout>
   );
 };
