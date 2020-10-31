@@ -28,7 +28,7 @@ const Info = styled.div`
   margin-bottom: 5px;
 `;
 
-const Edit = () => {
+const Bill = () => {
   const history = useHistory();
   const setBill = useSetRecoilState(billState);
   const id = new URLSearchParams(history.location.search).get("id");
@@ -71,4 +71,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default Bill;
