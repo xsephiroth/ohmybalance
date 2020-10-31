@@ -42,7 +42,11 @@ const Main = styled.div`
   flex: 1;
 
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+
+  & > * {
+    margin: 0 1em;
+  }
 `;
 
 const Category = styled.p`
