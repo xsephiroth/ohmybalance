@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { Layout } from "../components";
 import { login, register } from "../api";
@@ -47,7 +48,8 @@ const SwitchLink = styled.a`
   margin-top: 5px;
 `;
 
-const Account = ({ history }) => {
+const Account = () => {
+  const history = useHistory();
   const [formType, setFormType] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

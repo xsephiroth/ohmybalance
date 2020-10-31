@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useQuery } from "react-query";
 import { Layout, Card, Bill, FloatButton } from "../components";
 import { fetchMonthBills } from "../api";
@@ -39,7 +40,8 @@ const useYearMonth = () => {
   return [year, month];
 };
 
-const Home = ({ history }) => {
+const Home = () => {
+  const history = useHistory();
   const [year, month] = useYearMonth();
   const query = useQuery(["monthBills", year, month], fetchMonthBills, {
     enabled: year && month,

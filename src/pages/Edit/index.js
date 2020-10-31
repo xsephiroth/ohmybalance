@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
@@ -27,7 +28,8 @@ const Info = styled.div`
   margin-bottom: 5px;
 `;
 
-const Edit = ({ history }) => {
+const Edit = () => {
+  const history = useHistory();
   const setBill = useSetRecoilState(billState);
   const id = new URLSearchParams(history.location.search).get("id");
   useQuery(["bill", id], fetchBill, {
