@@ -1,12 +1,15 @@
 const TCB = require("@cloudbase/node-sdk");
 const bcrypt = require("bcryptjs");
-const credentials = require("./tcb_custom_login_key.json");
 
 const collection = "ohmybalance-users";
 
 const tcb = TCB.init({
-  env: credentials.env_id,
-  credentials,
+  env: process.env.ENV_ID,
+  credentials: {
+    env_id: process.env.ENV_ID,
+    private_key_id: process.env.CUSTOM_LOGIN_PRIVATE_KEY_ID,
+    private_key: process.env.CUSTOM_LOGIN_PRIVATE_KEY,
+  },
 });
 
 const auth = tcb.auth();
