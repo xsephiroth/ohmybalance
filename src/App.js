@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import React from "react";
+import {
+  HashRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { Home, Edit, Account } from "./pages";
-import tcb from "./tcb";
+import { auth } from "./tcb";
 
 const theme = {
   backgroundColor: {
@@ -31,46 +36,42 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const useAuth = () => {
-  const [loginState, setLoginState] = useState(null);
-
-  useEffect(() => {
-    const state = tcb.auth().hasLoginState();
-
-    if (state) {
-      setLoginState(state);
-      return;
-    }
-
-    tcb
-      .auth()
-      .anonymousAuthProvider()
-      .signIn()
-      .then((res) => setLoginState(res))
-      .catch(console.error);
-  }, []);
-
-  return loginState;
+const PrivateRoute = ({ children, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) => {
+        return auth.hasLoginState() ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/account",
+              state: { from: location },
+            }}
+          />
+        );
+      }}
+    />
+  );
 };
 
 const App = () => {
-  const loginState = useAuth();
-
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        {!loginState ? (
-          <p>Loading...</p>
-        ) : (
-          <Router>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/add" component={Edit} />
-              <Route path="/account" component={Account} />
-            </Switch>
-          </Router>
-        )}
+        <Router>
+          <Switch>
+            <PrivateRoute exact path="/">
+              <Home />
+            </PrivateRoute>
+            <PrivateRoute path="/add">
+              <Edit />
+            </PrivateRoute>
+            <Route path="/account" component={Account} />
+          </Switch>
+        </Router>
       </ThemeProvider>
     </>
   );
