@@ -40,7 +40,7 @@ const useYearMonth = () => {
   return [year, month];
 };
 
-const Home = () => {
+const Bills = () => {
   const history = useHistory();
   const [year, month] = useYearMonth();
   const query = useQuery(["monthBills", year, month], fetchMonthBills, {
@@ -73,4 +73,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Bills;
