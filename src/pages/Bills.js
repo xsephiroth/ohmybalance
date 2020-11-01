@@ -1,10 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 import { useQuery } from "react-query";
-import { Layout, Card, Bill, FloatButton } from "../components";
-import MonthSelector from "../components/MonthSelector";
+import { Layout, Card, Bill, FloatButton, MonthSelector } from "../components";
 import { fetchMonthBills } from "../api";
 import { formatDateText } from "../utils";
+
+const InfoText = styled.p`
+  color: white;
+  text-align: center;
+`;
 
 const useGroupDateBills = (bills = []) => {
   const groupDateBills = useMemo(() => {
@@ -55,14 +60,14 @@ const Bills = () => {
 
   return (
     <Layout>
-      {isLoading && <p>Loading...</p>}
-      {isError && <p>Error: {error.message}</p>}
       <MonthSelector
         value={`${year}-${month}`}
         onChange={handleYearMonthChange}
       />
+      {isLoading && <InfoText>Loading...</InfoText>}
+      {isError && <p>Error: {error.message}</p>}
       {isSuccess && groupDateBills.length === 0 && (
-        <p style={{ color: "white" }}>暂无账单</p>
+        <InfoText>暂无账单</InfoText>
       )}
       {isSuccess &&
         groupDateBills.map((dateBills) => (

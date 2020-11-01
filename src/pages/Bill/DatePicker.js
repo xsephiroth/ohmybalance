@@ -1,6 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { DateInput } from "../../components";
 import { billDateState } from "./state";
 import { formatDateText } from "../../utils";
 
@@ -14,22 +15,6 @@ const Button = styled.button`
   position: relative;
 `;
 
-const DateInput = styled.input.attrs({ type: "date" })`
-  min-width: 30px;
-  width: 100%;
-  outline: 1px solid red;
-  border: 0;
-  position: absolute;
-  opacity: 0;
-
-  // 隐藏icon触发点击日历事件
-  &::-webkit-calendar-picker-indicator {
-    position: absolute;
-    width: 100%;
-    left: -30px;
-  }
-`;
-
 const DatePicker = React.memo(() => {
   const [date, setDate] = useRecoilState(billDateState);
   const dateText = formatDateText(date);
@@ -38,6 +23,7 @@ const DatePicker = React.memo(() => {
     <>
       <Button>
         <DateInput
+          type="date"
           value={dateText}
           onChange={(e) => setDate(new Date(e.target.value))}
         />
