@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useQuery } from "react-query";
 import { Layout, Card, Bill, FloatButton } from "../components";
+import MonthSelector from "../components/MonthSelector";
 import { fetchMonthBills } from "../api";
 import { formatDateText } from "../utils";
 
@@ -29,20 +30,22 @@ const useGroupDateBills = (bills = []) => {
 };
 
 const useYearMonth = () => {
-  const [year, setYear] = useState();
-  const [month, setMonth] = useState();
+  const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth() + 1);
 
-  useEffect(() => {
-    const now = new Date();
-    setYear(now.getFullYear());
-    setMonth(now.getMonth() + 1);
-  }, []);
-  return [year, month];
+  const onChange = (e) => {
+    const d = new Date(e.target.value);
+    setYear(d.getFullYear());
+    setMonth(d.getMonth() + 1);
+  };
+
+  return [year, month, onChange];
 };
 
 const Bills = () => {
   const history = useHistory();
-  const [year, month] = useYearMonth();
+  const [year, month, handleYearMonthChange] = useYearMonth();
   const query = useQuery(["monthBills", year, month], fetchMonthBills, {
     enabled: year && month,
   });
@@ -54,6 +57,10 @@ const Bills = () => {
     <Layout>
       {isLoading && <p>Loading...</p>}
       {isError && <p>Error: {error.message}</p>}
+      <MonthSelector
+        value={`${year}-${month}`}
+        onChange={handleYearMonthChange}
+      />
       {isSuccess && groupDateBills.length === 0 && (
         <p style={{ color: "white" }}>暂无账单</p>
       )}
