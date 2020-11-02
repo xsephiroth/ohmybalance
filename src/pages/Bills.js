@@ -71,33 +71,14 @@ const Bills = () => {
       )}
       {isSuccess &&
         groupDateBills.map((dateBills) => (
-          <>
-            <Card key={dateBills.date}>
-              <Card.Header>{dateBills.date}</Card.Header>
-              <Card.Body>
-                {dateBills.bills.map((bill) => (
-                  <Bill key={bill._id} bill={bill} />
-                ))}
-              </Card.Body>
-            </Card>
-
-            <Card key={dateBills.date}>
-              <Card.Header>{dateBills.date}</Card.Header>
-              <Card.Body>
-                {dateBills.bills.map((bill) => (
-                  <Bill key={`${bill._id}-1`} bill={bill} />
-                ))}
-              </Card.Body>
-            </Card>
-            <Card key={dateBills.date}>
-              <Card.Header>{dateBills.date}</Card.Header>
-              <Card.Body>
-                {dateBills.bills.map((bill) => (
-                  <Bill key={`${bill._id}-2`} bill={bill} />
-                ))}
-              </Card.Body>
-            </Card>
-          </>
+          <Card key={dateBills.date}>
+            <Card.Header>{dateBills.date}</Card.Header>
+            <Card.Body>
+              {dateBills.bills.map((bill) => (
+                <Bill key={bill._id} bill={bill} />
+              ))}
+            </Card.Body>
+          </Card>
         ))}
       <FloatButton onClick={() => history.push("/bill")}>+</FloatButton>
     </Layout>
