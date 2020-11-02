@@ -9,15 +9,14 @@ const StyledContainer = styled.div`
   margin-bottom: 1em;
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled.a`
   position: relative;
 
   display: inline-block;
-  background-color: transparent;
-  border: 2px solid white;
   padding: 0.5em 2em;
-  border-radius: 5px;
   color: white;
+  text-decoration: none;
+  border-bottom: 2px solid white;
 `;
 
 const MonthSelector = ({ value, onChange }) => {
