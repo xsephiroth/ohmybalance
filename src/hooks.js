@@ -39,7 +39,7 @@ export const useLongPress = (
     const onMove = () => (moveRef.current = true);
 
     el.addEventListener("touchstart", onStart);
-    el.addEventListener("touchend", onEnd);
+    el.addEventListener("touchend", clear);
     el.addEventListener("touchmove", onMove);
     el.addEventListener("touchcancel", clear);
 
@@ -48,7 +48,7 @@ export const useLongPress = (
 
     return () => {
       el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchend", clear);
       el.removeEventListener("touchmove", onMove);
       el.removeEventListener("touchcancel", clear);
 
