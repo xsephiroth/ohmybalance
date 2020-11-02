@@ -87,7 +87,18 @@ const ExtraButton = styled.button`
   border: none;
   outline: none;
   padding: 5px 15px;
-  border-radius: 5px;
+  width: 50%;
+  height: 100%;
+
+  &:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  &:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
 
   ${(props) =>
     props.isDelete &&
@@ -119,7 +130,7 @@ const Bill = ({ bill }) => {
   return (
     <>
       {showExtra ? (
-        <Container>
+        <Container onBlur={() => setShowExtra(false)}>
           <ExtraButton onClick={onDelete} isDelete>
             删除
           </ExtraButton>
