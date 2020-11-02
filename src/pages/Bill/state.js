@@ -41,3 +41,8 @@ export const typeCategoriesState = selectorFamily({
   key: "typeCategories",
   get: (billType) => ({ get }) => get(categoriesState)[billType],
 });
+
+export const willDeleteCategoryState = atom({
+  key: "willDeleteCategory",
+  default: "",
+});

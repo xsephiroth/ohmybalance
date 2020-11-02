@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import produce from "immer";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
 import { useQuery, useMutation, useQueryCache } from "react-query";
 import { fetchCategories, updateCategories } from "../../api";
 import { useLongPress } from "../../hooks";
 import {
   billCategoryState,
-  billState,
   billTypeState,
   categoriesState,
+  willDeleteCategoryState,
 } from "./state";
 
 const Container = styled.div`
@@ -19,6 +19,7 @@ const Container = styled.div`
 const Button = styled.button`
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
   padding: 4px 8px;
   border-radius: 10px;
   margin: 5px;
@@ -71,18 +72,50 @@ const AddCategoryInput = styled.input`
 `;
 
 const CategoryBtn = React.memo(
-  ({ category, active, showDel, onClick, onLongPress, ...restProps }) => {
+  ({ category, active, showDel, ...restProps }) => {
+    const categories = useRecoilValue(categoriesState);
+    const billType = useRecoilValue(billTypeState);
+    const [currentCategory, setCurrentCategory] = useRecoilState(
+      billCategoryState
+    );
+    const [willDeleteCategory, setWillDeleteCategory] = useRecoilState(
+      willDeleteCategoryState
+    );
+
+    const invalidateCategories = useInvalidateCategories();
+    const [mutateCategories] = useMutation(updateCategories, {
+      onSettled: invalidateCategories,
+    });
+
     const ref = useLongPress(500, {
-      onClick: () => onClick(category),
-      onLongPress: () => onLongPress(category),
+      onClick: () => {
+        if (willDeleteCategory !== category) {
+          // 选择类目或反选
+          setCurrentCategory(currentCategory === category ? "" : category);
+          setWillDeleteCategory("");
+        } else {
+          // 准备删除时再次点击确认
+          // 同步更新
+          mutateCategories(
+            produce(categories, (categoriesSnapshot) => {
+              categoriesSnapshot[billType] = categoriesSnapshot[
+                billType
+              ].filter((c) => c !== category);
+            })
+          );
+        }
+      },
+      onLongPress: () => {
+        setCurrentCategory("");
+        setWillDeleteCategory(category);
+      },
     });
 
     return (
       <Button
         ref={ref}
-        onClick={(e) => e.stopPropagation()}
-        active={active}
-        showDel={showDel}
+        active={currentCategory === category}
+        showDel={willDeleteCategory === category}
         {...restProps}
       >
         {category}
@@ -98,8 +131,9 @@ const useInvalidateCategories = () => {
   }, [qc]);
 };
 
-const AddCagetory = React.memo(({ showInput, setShowInput }) => {
+const AddCagetory = () => {
   const [newCategory, setNewCategory] = useState("");
+  const [showInput, setShowInput] = useState(false);
 
   // 隐藏添加输入框时清空旧数据
   useEffect(() => {
@@ -158,17 +192,10 @@ const AddCagetory = React.memo(({ showInput, setShowInput }) => {
       )}
     </>
   );
-});
+};
 
 const Categories = React.memo(() => {
-  const [categoryDeleteSelect, setCategoryDeleteSelect] = useState("");
-  const [showAddInput, setShowAddInput] = useState(false);
-
-  const setBill = useSetRecoilState(billState);
   const billType = useRecoilValue(billTypeState);
-  const [currentCategory, setCurrentCategory] = useRecoilState(
-    billCategoryState
-  );
   const [categories, setCategories] = useRecoilState(categoriesState);
   const typeCategories = categories[billType];
 
@@ -178,58 +205,12 @@ const Categories = React.memo(() => {
     onSuccess: (categories) => setCategories(categories),
   });
 
-  const invalidateCategories = useInvalidateCategories();
-  const [mutateCategories] = useMutation(updateCategories, {
-    onSettled: () => {
-      setShowAddInput(false);
-      invalidateCategories();
-    },
-  });
-
-  const handleReset = () => {
-    setBill((b) => ({ ...b, category: "" }));
-    setCategoryDeleteSelect("");
-    setShowAddInput(false);
-  };
-
-  const handleCategoryClick = (category) => {
-    if (categoryDeleteSelect !== category) {
-      // 选择类目或反选
-      setCurrentCategory(currentCategory === category ? "" : category);
-      setCategoryDeleteSelect("");
-      setShowAddInput(false);
-    } else {
-      // 准备删除时再次点击确认
-      // 同步更新
-      mutateCategories(
-        produce(categories, (categoriesSnapshot) => {
-          categoriesSnapshot[billType] = categoriesSnapshot[billType].filter(
-            (c) => c !== category
-          );
-        })
-      );
-    }
-  };
-
-  const handleCategoryLongPress = (category) => {
-    setCategoryDeleteSelect(category);
-    setCurrentCategory("");
-    setShowAddInput(false);
-  };
-
   return (
-    <Container onClick={handleReset}>
+    <Container>
       {typeCategories?.map((category) => (
-        <CategoryBtn
-          key={category}
-          category={category}
-          active={currentCategory === category}
-          showDel={categoryDeleteSelect === category}
-          onClick={handleCategoryClick}
-          onLongPress={handleCategoryLongPress}
-        />
+        <CategoryBtn key={category} category={category} />
       ))}
-      <AddCagetory showInput={showAddInput} setShowInput={setShowAddInput} />
+      <AddCagetory />
     </Container>
   );
 });
