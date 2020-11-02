@@ -12,6 +12,7 @@ const Container = styled.div`
   height: 4em;
   padding: 5px;
   cursor: pointer;
+  -webkit-user-select: none;
 
   position: relative; // for extra
 `;
