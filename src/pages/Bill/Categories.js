@@ -81,6 +81,7 @@ const CategoryBtn = React.memo(
     const [willDeleteCategory, setWillDeleteCategory] = useRecoilState(
       willDeleteCategoryState
     );
+    const isDeleteSelected = willDeleteCategory === category;
 
     const invalidateCategories = useInvalidateCategories();
     const [mutateCategories] = useMutation(updateCategories, {
@@ -111,11 +112,15 @@ const CategoryBtn = React.memo(
       },
     });
 
+    // 准备删除时点击其它地方取消删除选中
+    const onDeleteBlur = () => isDeleteSelected && setWillDeleteCategory("");
+
     return (
       <Button
         ref={ref}
         active={currentCategory === category}
         showDel={willDeleteCategory === category}
+        onBlur={onDeleteBlur}
         {...restProps}
       >
         {category}
@@ -176,6 +181,7 @@ const AddCagetory = () => {
             autoFocus
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value.trim())}
+            onBlur={() => setShowInput(false)}
           />
         </AddCategoryForm>
       ) : (
