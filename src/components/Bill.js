@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMutation, useQueryCache } from "react-query";
 import styled, { css } from "styled-components";
-import { useLongClick } from "../hooks";
+import { useLongPress } from "../hooks";
 import { deleteBill } from "../api";
 
 const Container = styled.div`
@@ -100,11 +100,10 @@ const Bill = ({ bill }) => {
   const history = useHistory();
   const [showExtra, setShowExtra] = useState(false);
 
-  const longClickRef = useLongClick(
-    500,
-    () => history.push(`/bill?id=${bill._id}`),
-    () => setShowExtra(true)
-  );
+  const longPressRef = useLongPress(500, {
+    onClick: () => history.push(`/bill?id=${bill._id}`),
+    onLongPress: () => setShowExtra(true),
+  });
 
   const onCancel = () => setShowExtra(false);
 
@@ -126,7 +125,7 @@ const Bill = ({ bill }) => {
           <ExtraButton onClick={onCancel}>取消</ExtraButton>
         </Container>
       ) : (
-        <Container onClick={(e) => e.stopPropagation()} ref={longClickRef}>
+        <Container onClick={(e) => e.stopPropagation()} ref={longPressRef}>
           <Icon>
             {type === "income" && <DotIncome />}
             {type === "expense" && <DotExpense />}

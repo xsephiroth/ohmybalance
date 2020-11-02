@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
 import { useQuery, useMutation, useQueryCache } from "react-query";
 import { fetchCategories, updateCategories } from "../../api";
-import { useLongClick } from "../../hooks";
+import { useLongPress } from "../../hooks";
 import {
   billCategoryState,
   billState,
@@ -71,10 +71,11 @@ const AddCategoryInput = styled.input`
 `;
 
 const CategoryBtn = React.memo(
-  ({ category, active, showDel, onClick, onLongClick, ...restProps }) => {
-    const handleClick = () => onClick?.(category);
-    const handleLongClick = () => onLongClick?.(category);
-    const ref = useLongClick(500, handleClick, handleLongClick);
+  ({ category, active, showDel, onClick, onLongPress, ...restProps }) => {
+    const ref = useLongPress(500, {
+      onClick: () => onClick(category),
+      onLongPress: () => onLongPress(category),
+    });
 
     return (
       <Button
@@ -210,7 +211,7 @@ const Categories = React.memo(() => {
     }
   };
 
-  const handleCategoryLongClick = (category) => {
+  const handleCategoryLongPress = (category) => {
     setCategoryDeleteSelect(category);
     setCurrentCategory("");
     setShowAddInput(false);
@@ -225,7 +226,7 @@ const Categories = React.memo(() => {
           active={currentCategory === category}
           showDel={categoryDeleteSelect === category}
           onClick={handleCategoryClick}
-          onLongClick={handleCategoryLongClick}
+          onLongPress={handleCategoryLongPress}
         />
       ))}
       <AddCagetory showInput={showAddInput} setShowInput={setShowAddInput} />

@@ -1,54 +1,61 @@
 import { useRef, useEffect } from "react";
 
-export const useLongClick = (duration = 500, onClick, onLongClick) => {
+export const useLongPress = (
+  duration,
+  { onClick = null, onLongPress = null }
+) => {
   const ref = useRef();
+  const timeoutIdRef = useRef();
   const longRef = useRef(false);
+  const moveRef = useRef(false);
 
   useEffect(() => {
-    if (!ref.current) return;
-    const btn = ref.current;
+    const el = ref.current;
+    if (!el) return;
 
-    let id;
-    const end = () => {
-      clearTimeout(id);
-
-      if (!longRef.current) {
-        // eslint-disable-next-line no-unused-expressions
-        onClick?.();
-      }
+    const longPressed = () => {
+      longRef.current = true;
+      if (moveRef.current) return;
+      // eslint-disable-next-line no-unused-expressions
+      onLongPress?.();
     };
 
-    const start = (e) => {
-      // 避免touchstart与mousedown冲突
-      e.preventDefault();
-
-      // reset
-      clearTimeout(id);
+    const onStart = () => {
+      moveRef.current = false;
       longRef.current = false;
-
-      id = setTimeout(() => {
-        longRef.current = true;
-        // eslint-disable-next-line no-unused-expressions
-        onLongClick?.();
-        navigator.vibrate(50);
-      }, duration);
+      timeoutIdRef.current = setTimeout(longPressed, duration);
     };
 
-    btn.addEventListener("touchstart", start);
-    btn.addEventListener("touchend", end);
-    btn.addEventListener("touchcancel", end);
-    btn.addEventListener("mousedown", start);
-    btn.addEventListener("mouseup", end);
+    const clear = () => clearTimeout(timeoutIdRef.current);
+
+    const onEnd = () => {
+      clear();
+      if (moveRef.current) return;
+      if (longRef.current) return;
+      // eslint-disable-next-line no-unused-expressions
+      onClick?.();
+    };
+
+    const onMove = () => (moveRef.current = true);
+
+    el.addEventListener("touchstart", onStart);
+    el.addEventListener("touchend", onEnd);
+    el.addEventListener("touchmove", onMove);
+    el.addEventListener("touchcancel", clear);
+
+    el.addEventListener("mousedown", onStart);
+    el.addEventListener("mouseup", onEnd);
 
     return () => {
-      clearTimeout(id);
-      btn.removeEventListener("touchstart", start);
-      btn.removeEventListener("touchend", end);
-      btn.removeEventListener("touchcancel", end);
-      btn.removeEventListener("mousedown", start);
-      btn.removeEventListener("mouseup", end);
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchcancel", clear);
+
+      el.removeEventListener("mousedown", onStart);
+      el.removeEventListener("mouseup", onEnd);
     };
-  }, [duration, onClick, onLongClick]);
+  }, [duration, onClick, onLongPress]);
 
   return ref;
 };
