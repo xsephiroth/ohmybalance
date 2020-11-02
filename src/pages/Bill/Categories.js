@@ -21,20 +21,33 @@ const Button = styled.button`
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   padding: 4px 8px;
-  border-radius: 10px;
   margin: 5px;
   background-color: ${({ theme }) => theme.backgroundColor.secondary};
   color: ${({ theme }) => theme.color.primary};
   user-select: none;
 
-  border: 1px solid transparent;
-  ${({ active, theme }) =>
-    active &&
-    css`
-      border: 1px solid ${theme.color.secondary};
-    `}
+  border-radius: 10px;
+  border: none;
+
+  min-width: 6em;
+  line-height: 1.5em;
 
   position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 4%;
+    bottom: -2px;
+    margin: 0 auto;
+
+    background-color: ${(props) => (props.active ? "white" : "transparent")};
+
+    width: ${(props) => (props.active ? "92%" : 0)};
+    height: 2px;
+    transition: width 0.3s;
+  }
+
   ${(props) =>
     props.showDel &&
     css`
@@ -54,7 +67,6 @@ const Button = styled.button`
 
 const AddCategoryButton = styled(Button)`
   width: 50px;
-  padding: 0.5em;
 `;
 
 const AddCategoryForm = styled.form`
