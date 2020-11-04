@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useQuery } from "react-query";
 import { Layout, Card, Bill, FloatButton, MonthSelector } from "../components";
 import { fetchMonthBills } from "../api";
@@ -37,7 +37,26 @@ const useGroupDateBills = (bills = []) => {
     return final;
   }, [bills]);
 
-  return groupDateBills;
+  const groupDateStatsBills = useMemo(() => {
+    return groupDateBills.map((dateBills) => {
+      const stats = dateBills.bills.reduce(
+        (acc, bill) => {
+          switch (bill.type) {
+            case "income":
+              return { ...acc, income: acc.income + bill.amount };
+            case "expense":
+              return { ...acc, expense: acc.expense + bill.amount };
+            default:
+              return acc;
+          }
+        },
+        { expense: 0, income: 0 }
+      );
+      return { ...dateBills, stats };
+    });
+  }, [groupDateBills]);
+
+  return groupDateStatsBills;
 };
 
 const useYearMonth = () => {
@@ -58,6 +77,70 @@ const useShowAddButton = () => {
   const scrollY = useScrollY();
   const showAddButton = scrollY !== "down";
   return showAddButton;
+};
+
+const StyledDateBillHeader = styled(Card.Header)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .stats {
+  }
+  .income {
+    color: ${(props) => props.theme.color.income};
+  }
+  .expense {
+    color: ${(props) => props.theme.color.expense};
+  }
+`;
+
+const Stats = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const BillTypeStat = styled.p`
+  &::before {
+    color: white;
+    margin-right: 3px;
+  }
+
+  // income
+  ${(props) =>
+    props.income &&
+    css`
+      color: ${(props) => props.theme.color.income};
+      &::before {
+        content: "收:";
+      }
+    `}
+
+  // expense
+  ${(props) =>
+    props.expense &&
+    css`
+      color: ${(props) => props.theme.color.expense};
+      margin-left: 5px;
+      &::before {
+        content: "支:";
+      }
+    `}
+`;
+
+const DateBillHeader = ({ date, stats }) => {
+  return (
+    <StyledDateBillHeader>
+      <p>{date}</p>
+      <Stats>
+        <BillTypeStat></BillTypeStat>
+        {stats.income !== 0 && (
+          <BillTypeStat income>{stats.income}</BillTypeStat>
+        )}
+        <BillTypeStat expense>{stats.expense}</BillTypeStat>
+      </Stats>
+    </StyledDateBillHeader>
+  );
 };
 
 const Bills = () => {
@@ -85,7 +168,7 @@ const Bills = () => {
       {isSuccess &&
         groupDateBills.map((dateBills) => (
           <Card key={dateBills.date}>
-            <Card.Header>{dateBills.date}</Card.Header>
+            <DateBillHeader date={dateBills.date} stats={dateBills.stats} />
             <Card.Body>
               {dateBills.bills.map((bill) => (
                 <Bill key={bill._id} bill={bill} />
