@@ -59,7 +59,7 @@ const Bills = () => {
   const groupDateBills = useGroupDateBills(bills);
 
   return (
-    <Layout>
+    <Layout style={{ padding: "10px 0" }}>
       <MonthSelector
         value={`${year}-${month}`}
         onChange={handleYearMonthChange}
