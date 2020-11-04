@@ -5,10 +5,16 @@ import { useQuery } from "react-query";
 import { Layout, Card, Bill, FloatButton, MonthSelector } from "../components";
 import { fetchMonthBills } from "../api";
 import { formatDateText } from "../utils";
+import { useScrollY } from "../hooks";
 
 const InfoText = styled.p`
   color: white;
   text-align: center;
+`;
+
+const AutoDisplayFloatButton = styled(FloatButton)`
+  transition: transform 0.5s;
+  transform: translate(-50%, ${(props) => (props.show ? "-50%" : "100px")});
 `;
 
 const useGroupDateBills = (bills = []) => {
@@ -48,8 +54,15 @@ const useYearMonth = () => {
   return [year, month, onChange];
 };
 
+const useShowAddButton = () => {
+  const scrollY = useScrollY();
+  const showAddButton = scrollY !== "down";
+  return showAddButton;
+};
+
 const Bills = () => {
   const history = useHistory();
+  const showAddButton = useShowAddButton();
   const [year, month, handleYearMonthChange] = useYearMonth();
   const query = useQuery(["monthBills", year, month], fetchMonthBills, {
     enabled: year && month,
@@ -80,7 +93,12 @@ const Bills = () => {
             </Card.Body>
           </Card>
         ))}
-      <FloatButton onClick={() => history.push("/bill")}>+</FloatButton>
+      <AutoDisplayFloatButton
+        show={showAddButton}
+        onClick={() => history.push("/bill")}
+      >
+        +
+      </AutoDisplayFloatButton>
     </Layout>
   );
 };

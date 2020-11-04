@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export const useLongPress = (
   duration,
@@ -58,4 +58,36 @@ export const useLongPress = (
   }, [duration, onClick, onLongPress]);
 
   return ref;
+};
+
+export const useScrollY = (threshold = 100) => {
+  const [dir, setDir] = useState(null);
+
+  useEffect(() => {
+    let startY = null;
+    let scrollId;
+
+    const onScroll = () => {
+      // 标识起始位置
+      if (startY === null) startY = window.scrollY;
+
+      // 持续滚动时清理timeout
+      clearTimeout(scrollId);
+
+      scrollId = setTimeout(() => {
+        // 仅在threashold满足时更新dir
+        Math.abs(startY - window.scrollY) >= threshold &&
+          setDir(startY >= window.scrollY ? "up" : "down");
+
+        // 重置起始位置
+        startY = null;
+      }, 50);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [threshold]);
+
+  return dir;
 };
