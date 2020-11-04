@@ -6,8 +6,13 @@ import {
   Redirect,
 } from "react-router-dom";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
-import { Bills, Bill, Account } from "./pages";
 import { auth } from "./tcb";
+import LoadingFallback from "./components/LoadingFallback";
+
+// pages
+const Bills = React.lazy(() => import("./pages/Bills"));
+const Bill = React.lazy(() => import("./pages/Bill"));
+const Account = React.lazy(() => import("./pages/Account"));
 
 const theme = {
   backgroundColor: {
@@ -61,17 +66,19 @@ const App = () => {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Router>
-          <Switch>
-            <PrivateRoute exact path="/">
-              <Bills />
-            </PrivateRoute>
-            <PrivateRoute path="/bill">
-              <Bill />
-            </PrivateRoute>
-            <Route path="/account" component={Account} />
-          </Switch>
-        </Router>
+        <React.Suspense fallback={<LoadingFallback />}>
+          <Router>
+            <Switch>
+              <PrivateRoute exact path="/">
+                <Bills />
+              </PrivateRoute>
+              <PrivateRoute path="/bill">
+                <Bill />
+              </PrivateRoute>
+              <Route path="/account" component={Account} />
+            </Switch>
+          </Router>
+        </React.Suspense>
       </ThemeProvider>
     </>
   );
