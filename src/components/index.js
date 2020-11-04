@@ -5,3 +5,4 @@ export { default as FloatButton } from "./FloatButton";
 export { default as NavigationBar } from "./NavigationBar";
 export { default as DateInput } from "./DateInput";
 export { default as MonthSelector } from "./MonthSelector";
+export { default as LoadingFallback } from "./LoadingFallback";
