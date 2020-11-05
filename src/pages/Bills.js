@@ -66,8 +66,13 @@ const useYearMonth = () => {
 
   const onChange = (e) => {
     const d = new Date(e.target.value);
-    setYear(d.getFullYear());
-    setMonth(d.getMonth() + 1);
+    const y = d.getFullYear();
+    const mon = d.getMonth();
+
+    if (Number.isNaN(y) || Number.isNaN(mon)) return;
+
+    setYear(y);
+    setMonth(mon + 1);
   };
 
   return [year, month, onChange];
