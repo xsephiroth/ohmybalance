@@ -154,6 +154,7 @@ const useInvalidateCategories = () => {
 const AddCagetory = () => {
   const [newCategory, setNewCategory] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [showAddingHint, setShowAddingHint] = useState(false);
   const [popupError] = useErrorPopup();
 
   // 隐藏添加输入框时清空旧数据
@@ -166,8 +167,10 @@ const AddCagetory = () => {
 
   const invalidateCategories = useInvalidateCategories();
   const [mutateCategories] = useMutation(updateCategories, {
+    onMutate: () => setShowAddingHint(true),
     onSettled: () => {
       setShowInput(false);
+      setShowAddingHint(false);
       invalidateCategories();
     },
     onError: (err) => popupError(err),
@@ -192,6 +195,7 @@ const AddCagetory = () => {
 
   return (
     <>
+      {showAddingHint && <AddCategoryButton disabled>...</AddCategoryButton>}
       {showInput ? (
         <AddCategoryForm onSubmit={handleSubmit}>
           <AddCategoryInput
