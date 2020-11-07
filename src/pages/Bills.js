@@ -154,6 +154,7 @@ const Bills = () => {
   const [year, month, handleYearMonthChange] = useYearMonth();
   const query = useQuery(["monthBills", year, month], fetchMonthBills, {
     enabled: year && month,
+    suspense: true,
   });
   const { data: bills, isLoading, isSuccess, isError, error } = query;
 
