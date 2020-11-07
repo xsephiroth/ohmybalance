@@ -61,11 +61,12 @@ const Button = styled.button`
     bottom: -2px;
     margin: 0 auto;
 
-    background-color: ${(props) => (props.active ? "white" : "transparent")};
-
-    width: ${(props) => (props.active ? "92%" : 0)};
+    width: 92%;
     height: 2px;
-    transition: width 0.3s;
+
+    transition: 0.3s;
+    transform: scaleX(${(props) => (props.active ? "1" : 0)});
+    background-color: ${(props) => (props.active ? "white" : "transparent")};
   }
 
   ${(props) =>
