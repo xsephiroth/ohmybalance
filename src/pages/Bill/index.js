@@ -46,27 +46,25 @@ const Bill = () => {
 
   return (
     <Layout>
-      <React.Suspense fallback={<p>Loading...</p>}>
-        <NavigationBar
-          start={<NavigationBar.Back />}
-          center={
-            <NavigationBar.Center>
-              <BillTypeSwitch />
-            </NavigationBar.Center>
-          }
-        />
-        <Wrapper>
-          <Categories />
-          <Block>
-            <Info>
-              <Remark />
-              <DatePicker />
-              <Amount />
-            </Info>
-            <AmountKeyboard />
-          </Block>
-        </Wrapper>
-      </React.Suspense>
+      <NavigationBar
+        start={<NavigationBar.Back />}
+        center={
+          <NavigationBar.Center>
+            <BillTypeSwitch />
+          </NavigationBar.Center>
+        }
+      />
+      <Wrapper>
+        <Categories />
+        <Block>
+          <Info>
+            <Remark />
+            <DatePicker />
+            <Amount />
+          </Info>
+          <AmountKeyboard />
+        </Block>
+      </Wrapper>
     </Layout>
   );
 };
