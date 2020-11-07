@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useQuery } from "react-query";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { Layout, NavigationBar } from "../../components";
+import { ErrorPopupProvider } from "../../components/ErrorPopup";
 import { fetchBill } from "../../api";
 import BillTypeSwitch from "./BillTypeSwitch";
 import Categories from "./Categories";
@@ -46,25 +47,27 @@ const Bill = () => {
 
   return (
     <Layout>
-      <NavigationBar
-        start={<NavigationBar.Back />}
-        center={
-          <NavigationBar.Center>
-            <BillTypeSwitch />
-          </NavigationBar.Center>
-        }
-      />
-      <Wrapper>
-        <Categories />
-        <Block>
-          <Info>
-            <Remark />
-            <DatePicker />
-            <Amount />
-          </Info>
-          <AmountKeyboard />
-        </Block>
-      </Wrapper>
+      <ErrorPopupProvider>
+        <NavigationBar
+          start={<NavigationBar.Back />}
+          center={
+            <NavigationBar.Center>
+              <BillTypeSwitch />
+            </NavigationBar.Center>
+          }
+        />
+        <Wrapper>
+          <Categories />
+          <Block>
+            <Info>
+              <Remark />
+              <DatePicker />
+              <Amount />
+            </Info>
+            <AmountKeyboard />
+          </Block>
+        </Wrapper>
+      </ErrorPopupProvider>
     </Layout>
   );
 };

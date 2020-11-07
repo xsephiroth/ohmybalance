@@ -3,6 +3,7 @@ import produce from "immer";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled, { css } from "styled-components";
 import { useQuery, useMutation, useQueryCache } from "react-query";
+import { useErrorPopup } from "../../components/ErrorPopup";
 import { fetchCategories, updateCategories } from "../../api";
 import { useLongPress } from "../../hooks";
 import {
@@ -85,6 +86,7 @@ const AddCategoryInput = styled.input`
 
 const CategoryBtn = React.memo(
   ({ category, active, showDel, ...restProps }) => {
+    const [popupError] = useErrorPopup();
     const categories = useRecoilValue(categoriesState);
     const billType = useRecoilValue(billTypeState);
     const [currentCategory, setCurrentCategory] = useRecoilState(
@@ -98,6 +100,7 @@ const CategoryBtn = React.memo(
     const invalidateCategories = useInvalidateCategories();
     const [mutateCategories] = useMutation(updateCategories, {
       onSettled: invalidateCategories,
+      onError: (err) => popupError(err),
     });
 
     const ref = useLongPress(500, {
@@ -151,6 +154,7 @@ const useInvalidateCategories = () => {
 const AddCagetory = () => {
   const [newCategory, setNewCategory] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [popupError] = useErrorPopup();
 
   // 隐藏添加输入框时清空旧数据
   useEffect(() => {
@@ -166,6 +170,7 @@ const AddCagetory = () => {
       setShowInput(false);
       invalidateCategories();
     },
+    onError: (err) => popupError(err),
   });
 
   const handleSubmit = (e) => {
@@ -216,11 +221,13 @@ const Categories = React.memo(() => {
   const billType = useRecoilValue(billTypeState);
   const [categories, setCategories] = useRecoilState(categoriesState);
   const typeCategories = categories[billType];
+  const [popupError] = useErrorPopup();
 
   // 同步线上的categories数据
   useQuery("categories", fetchCategories, {
     refetchOnWindowFocus: false,
     onSuccess: (categories) => setCategories(categories),
+    onError: (err) => popupError(err),
   });
 
   return (
