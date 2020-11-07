@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import produce from "immer";
 import { useRecoilState, useRecoilValue } from "recoil";
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { useQuery, useMutation, useQueryCache } from "react-query";
 import { useErrorPopup } from "../../components/ErrorPopup";
 import { fetchCategories, updateCategories } from "../../api";
@@ -17,15 +17,34 @@ const Container = styled.div`
   flex: 1;
 `;
 
+const deletingKeyframes = keyframes`
+0% {
+  opacity: 1;
+}
+
+50% {
+  opacity: 0.5;
+}
+
+100% {
+  opacity: 1;
+}
+`;
+
 const Button = styled.button`
   outline: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   padding: 4px 8px;
   margin: 5px;
-  background-color: ${({ theme }) => theme.backgroundColor.secondary};
-  color: ${({ theme }) => theme.color.primary};
   user-select: none;
+  color: ${({ theme }) => theme.color.primary};
+  background-color: ${({ theme }) => theme.backgroundColor.secondary};
+  ${(props) =>
+    props.deleting &&
+    css`
+      animation: ${deletingKeyframes} 500ms infinite;
+    `}
 
   border-radius: 10px;
   border: none;
@@ -96,10 +115,15 @@ const CategoryBtn = React.memo(
       willDeleteCategoryState
     );
     const isDeleteSelected = willDeleteCategory === category;
+    const [showDeletingHint, setShowDeletingHint] = useState(false);
 
     const invalidateCategories = useInvalidateCategories();
     const [mutateCategories] = useMutation(updateCategories, {
-      onSettled: invalidateCategories,
+      onMutate: () => setShowDeletingHint(true),
+      onSettled: () => {
+        invalidateCategories();
+        setShowDeletingHint(false);
+      },
       onError: (err) => popupError(err),
     });
 
@@ -135,6 +159,7 @@ const CategoryBtn = React.memo(
         ref={ref}
         active={currentCategory === category}
         showDel={willDeleteCategory === category}
+        deleting={showDeletingHint}
         onBlur={onDeleteBlur}
         {...restProps}
       >
