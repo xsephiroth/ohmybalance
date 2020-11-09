@@ -2,7 +2,14 @@ import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useQuery } from "react-query";
-import { Layout, Card, Bill, FloatButton, MonthSelector } from "../components";
+import {
+  Layout,
+  Card,
+  Bill,
+  FloatButton,
+  MonthSelector,
+  LoadingFallback,
+} from "../components";
 import { fetchMonthBills } from "../api";
 import { formatDateText } from "../utils";
 import { useScrollY } from "../hooks";
@@ -154,7 +161,6 @@ const Bills = () => {
   const [year, month, handleYearMonthChange] = useYearMonth();
   const query = useQuery(["monthBills", year, month], fetchMonthBills, {
     enabled: year && month,
-    suspense: true,
   });
   const { data: bills, isLoading, isSuccess, isError, error } = query;
 
@@ -166,7 +172,7 @@ const Bills = () => {
         value={`${year}-${month}`}
         onChange={handleYearMonthChange}
       />
-      {isLoading && <InfoText>Loading...</InfoText>}
+      {isLoading && <LoadingFallback />}
       {isError && <p>Error: {error.message}</p>}
       {isSuccess && groupDateBills.length === 0 && (
         <InfoText>暂无账单</InfoText>
