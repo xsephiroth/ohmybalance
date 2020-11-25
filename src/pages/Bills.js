@@ -59,6 +59,11 @@ const useGroupDateBills = (bills = []) => {
         },
         { expense: 0, income: 0 }
       );
+
+      // fixed float
+      stats.expense = parseFloat(stats.expense.toFixed(2));
+      stats.income = parseFloat(stats.income.toFixed(2));
+
       return { ...dateBills, stats };
     });
   }, [groupDateBills]);
